@@ -1,3 +1,4 @@
+import 'package:ecommerce_app/screens/admin/add_category.dart';
 import 'package:ecommerce_app/screens/admin/add_new_product.dart';
 import 'package:ecommerce_app/screens/admin/edit_product/edit_product.dart';
 import 'package:ecommerce_app/screens/admin/orders_screen/orders_page.dart';
@@ -70,25 +71,52 @@ class _AdminHomeState extends State<AdminHome> {
                   icon: Image.asset(ImageAssets.bag),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Wrap(
-                  spacing: 8.0,
-                  children: [
-                    'Chair',
-                    'Sofa',
-                  ].map<Widget>((category) {
-                    return ChoiceChip(
-                      label: Text(category),
-                      selected: _selectedCategory == category,
-                      onSelected: (bool selected) {
-                        setState(() {
-                          _selectedCategory = category;
-                          _updateProductStream(category);
-                        });
+              SizedBox(
+                width: 300,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('categories')
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasError) {
+                          return Text('Something went wrong');
+                        }
+
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return CircularProgressIndicator();
+                        }
+
+                        List<String> categories = snapshot.data!.docs
+                            .map((doc) => doc['name'] as String)
+                            .toList();
+
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Wrap(
+                            spacing: 8.0,
+                            children: categories.map<Widget>((category) {
+                              return ChoiceChip(
+                                label: Text(category),
+                                selected: _selectedCategory == category,
+                                onSelected: (bool selected) {
+                                  setState(() {
+                                    _selectedCategory = category;
+                                    _updateProductStream(category);
+                                  });
+                                },
+                              );
+                            }).toList(),
+                          ),
+                        );
                       },
-                    );
-                  }).toList(),
+                    ),
+                  ),
                 ),
               ),
               Padding(
@@ -206,12 +234,20 @@ class _AdminHomeState extends State<AdminHome> {
                                                   fontWeight: FontWeight.w300),
                                             ),
                                           ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(2.0),
+                                            child: Text(
+                                              '\$ ${product['price']}',
+                                              style: const TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ),
                                   ],
                                 ),
-
                                 Positioned(
                                   top: 8,
                                   left: 8,
@@ -234,20 +270,6 @@ class _AdminHomeState extends State<AdminHome> {
                                     },
                                   ),
                                 ),
-
-                                //Positioned(
-                                // top: 2,
-                                //left: 0,
-                                // right: 0,
-                                //child: Center(
-                                //child: Text(
-                                //'\$ ${product['price']}',
-                                // style: TextStyle(
-                                //fontSize: 13,
-                                // fontWeight: FontWeight.w600),
-                                //),
-                                //),
-                                // ),
                               ],
                             ),
                           ),

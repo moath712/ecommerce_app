@@ -22,8 +22,7 @@ class CartState extends StateNotifier<List<Map<String, dynamic>>> {
         'userId': userId,
         'userData': userData.data(),
         'cartItems': state,
-        'timestamp':
-            Timestamp.now(), // optional, for keeping track of order time
+        'timestamp': Timestamp.now(),
       };
 
       // Add order to Firestore
@@ -169,11 +168,11 @@ class CartPage extends ConsumerWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                GestureDetector(
-                  onTap: () {
+                IconButton(
+                  onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Image.asset(ImageAssets.back),
+                  icon: Image.asset(ImageAssets.back),
                 ),
               ],
             ),
@@ -217,12 +216,29 @@ class CartPage extends ConsumerWidget {
                                 fontWeight: FontWeight.w800,
                                 color: AppColors.cartpink),
                           ),
-                          Text(
-                            '\$${(cart[index]['price'] ?? 0) * (cart[index]['userQuantity'] ?? 0)}',
-                            style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w800,
-                                color: AppColors.totalpink),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              '\$${(cart[index]['price'] ?? 0) * (cart[index]['userQuantity'] ?? 0)}',
+                              style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                  color: AppColors.totalpink),
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              if (cart[index]['selectedColor'] != null)
+                                CircleAvatar(
+                                  backgroundColor: Color(int.parse(
+                                      '0xFF${cart[index]['selectedColor']['hex'].substring(1)}')),
+                                  radius: 5,
+                                ),
+                              SizedBox(width: 8),
+                              if (cart[index]['selectedColor'] != null)
+                                Text(
+                                    '${cart[index]['selectedColor']['color']}'), // assuming the color has a 'name' property
+                            ],
                           ),
                         ],
                       ),

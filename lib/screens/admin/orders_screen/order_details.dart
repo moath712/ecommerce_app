@@ -20,58 +20,128 @@ class OrderDetailsPage extends StatelessWidget {
           previousValue + ((item['price'] ?? 0) * (item['userQuantity'] ?? 1)),
     );
 
-    return Scaffold(
-      body: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: Image.asset(ImageAssets.back),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-          Expanded(
-            child: ListView(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CircleAvatar(
-                    backgroundImage: NetworkImage(userData['photoUrl']),
-                    radius: 80,
-                  ),
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.black,
+          width: 6,
+        ),
+      ),
+      child: Scaffold(
+        body: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: Image.asset(ImageAssets.back),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('Customer Name: ${userData['firstName']}'),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                      'Placed at ${DateFormat.yMd().add_jm().format((order['timestamp'] as Timestamp).toDate())}'),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('Total: \$${totalPrice.toStringAsFixed(2)}'),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('Phone Number: ${userData['Phone Number']}'),
-                ),
-                ...cartItems.map((item) {
-                  return ListTile(
-                    leading: Image.network(item['imageURL']),
-                    title: Text(item['title']),
-                    trailing: Text('Quantity: ${item['userQuantity']}'),
-                  );
-                }).toList(),
               ],
             ),
-          ),
-        ],
+            Expanded(
+              child: ListView(
+                children: <Widget>[
+                  //NetworkImage(userData['photoUrl']),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CircleAvatar(
+                      radius: 80,
+                      child: ClipOval(
+                        child: AspectRatio(
+                          aspectRatio: 1 / 1,
+                          child: userData['photoUrl'] != null
+                              ? Image.network(
+                                  userData['photoUrl'],
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (BuildContext context,
+                                      Object exception,
+                                      StackTrace? stackTrace) {
+                                    return const Icon(Icons.account_circle,
+                                        size: 80.0);
+                                  },
+                                )
+                              : const Icon(Icons.account_circle, size: 80.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          "Customer Information:",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w800, fontSize: 18),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          ' ${DateFormat.yMd().add_jm().format((order['timestamp'] as Timestamp).toDate())}',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w800, fontSize: 18),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('Name : ${userData['firstName']}'),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('Tel : ${userData['Phone Number']}'),
+                  ),
+                  const Divider(
+                    color: Colors.black,
+                    thickness: 6,
+                  ),
+                  ...cartItems.map((item) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ListTile(
+                        leading: Image.network(item['imageURL']),
+                        title: Text(item['title']),
+                        subtitle: Row(
+                          children: [
+                            if (item['selectedColor'] != null)
+                              CircleAvatar(
+                                backgroundColor: Color(int.parse(
+                                    '0xFF${item['selectedColor']['hex'].substring(1)}')),
+                                radius: 10,
+                              ),
+                            SizedBox(width: 8),
+                            if (item['selectedColor'] != null)
+                              Text(
+                                  'Color: ${item['selectedColor']['color']}'), // assuming the color has a 'name' property
+                          ],
+                        ),
+                        trailing: Text('Quantity: ${item['userQuantity']}'),
+                      ),
+                    );
+                  }).toList(),
+                ],
+              ),
+            ),
+            const Divider(
+              color: Colors.black,
+              thickness: 6,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Total: \$${totalPrice.toStringAsFixed(2)}',
+                style:
+                    const TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

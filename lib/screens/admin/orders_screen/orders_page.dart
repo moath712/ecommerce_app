@@ -89,7 +89,7 @@ class OrdersPage extends ConsumerWidget {
                           ),
                         );
                       },
-                      child: Text('View Details'),
+                      child: const Text('View Details'),
                     ),
                   ],
                 );

@@ -65,10 +65,20 @@ class _ClientHomeState extends State<ClientHome> {
                                 child: ClipOval(
                                   child: AspectRatio(
                                     aspectRatio: 1 / 1,
-                                    child: Image.network(
-                                      userData['photoUrl'],
-                                      fit: BoxFit.cover,
-                                    ),
+                                    child: userData['photoUrl'] != null
+                                        ? Image.network(
+                                            userData['photoUrl'],
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (BuildContext context,
+                                                Object exception,
+                                                StackTrace? stackTrace) {
+                                              return const Icon(
+                                                  Icons.account_circle,
+                                                  size: 80.0);
+                                            },
+                                          )
+                                        : const Icon(Icons.account_circle,
+                                            size: 80.0),
                                   ),
                                 ),
                               ),
@@ -185,71 +195,76 @@ class _ClientHomeState extends State<ClientHome> {
           ),
           SizedBox(
             height: 200,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 2,
-              itemBuilder: (BuildContext context, int index) {
-                final productData = [
-                  {
-                    "title": "Chair",
-                    "image": "https://i.imgur.com/JqKDdxj.png",
-                    "numOfProducts": 100
-                  },
-                  {
-                    "title": "Sofa",
-                    "image": "https://i.imgur.com/HUf1kWu.png",
-                    "numOfProducts": 15
-                  },
-                ][index];
+            child: StreamBuilder<QuerySnapshot>(
+              stream: firestore.collection('categories').snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Something went wrong');
+                }
 
-                String title = productData['title'] as String;
-                String image = productData['image'] as String;
-                int numOfProducts = productData['numOfProducts'] as int;
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              CategoryProducts(categoryName: title),
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                }
+
+                return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    var doc = snapshot.data!.docs[index];
+                    String title = doc['name'];
+                    String image = doc['imageUrl'];
+                    int numOfProducts = doc['productCount'];
+
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  CategoryProducts(categoryName: title),
+                            ),
+                          );
+                        },
+                        child: Card(
+                          color: const Color.fromARGB(255, 232, 236, 237),
+                          shadowColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Image.network(
+                                  image,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(title,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                    Text(
+                                      ' $numOfProducts+ Products',
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      );
-                    },
-                    child: Card(
-                      color: const Color.fromARGB(255, 232, 236, 237),
-                      shadowColor: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Image.network(
-                              image,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(title,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                                Text(' $numOfProducts+ Products',
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                    );
+                  },
                 );
               },
             ),

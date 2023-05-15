@@ -187,10 +187,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 child: ClipOval(
                                   child: AspectRatio(
                                     aspectRatio: 1 / 1,
-                                    child: Image.network(
-                                      data['photoUrl'],
-                                      fit: BoxFit.cover,
-                                    ),
+                                    child: data['photoUrl'] != null
+                                        ? Image.network(
+                                            data['photoUrl'],
+                                            fit: BoxFit.cover,
+                                          )
+                                        : const Icon(Icons.account_circle,
+                                            size: 160.0),
                                   ),
                                 ),
                               ),

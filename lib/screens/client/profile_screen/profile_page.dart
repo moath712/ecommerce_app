@@ -204,10 +204,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                 child: ClipOval(
                                   child: AspectRatio(
                                     aspectRatio: 1 / 1,
-                                    child: Image.network(
-                                      data['photoUrl'],
-                                      fit: BoxFit.cover,
-                                    ),
+                                    child: data['photoUrl'] != null
+                                        ? Image.network(
+                                            data['photoUrl'],
+                                            fit: BoxFit.cover,
+                                          )
+                                        : const Icon(Icons.account_circle,
+                                            size:
+                                                160.0), // Adjust the icon size as needed
                                   ),
                                 ),
                               ),

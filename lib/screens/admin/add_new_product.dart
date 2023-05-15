@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_app/screens/admin/add_category.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:flutter/material.dart';
 
@@ -20,11 +21,6 @@ class _AddProductWidgetState extends State<AddProductWidget> {
   final _descriptionController = TextEditingController();
   late int _selectedCategoryIndex = 0;
 
-  final List<String> _categories = [
-    'Chair',
-    'Sofa',
-  ];
-
   final Map<String, String> _colorHexValues = {
     'Red': '#FF0000',
     'Blue': '#0000FF',
@@ -33,7 +29,8 @@ class _AddProductWidgetState extends State<AddProductWidget> {
     'Black': '#000000',
     'White': '#FFFFFF',
   };
-
+  final Stream<QuerySnapshot> _categoriesStream =
+      FirebaseFirestore.instance.collection('categories').snapshots();
   final List<Map<String, String>> _selectedColorsWithHex = [];
 
   List<Widget> _buildColorCheckboxes() {
@@ -68,19 +65,14 @@ class _AddProductWidgetState extends State<AddProductWidget> {
     }).toList();
   }
 
+  String _selectedCategory = "";
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      String categoryName = '';
-      if (_selectedCategoryIndex == 0) {
-        categoryName = 'Chair';
-      } else if (_selectedCategoryIndex == 1) {
-        categoryName = 'Sofa';
-      }
       final product = {
         'title': _titleController.text,
         'price': int.parse(_priceController.text),
         'quantity': int.parse(_quantityController.text),
-        'category': categoryName,
+        'category': _selectedCategory,
         'imageURL': _imageController.text,
         'subTitle': _subTitleController.text,
         'description': _descriptionController.text,
@@ -89,7 +81,9 @@ class _AddProductWidgetState extends State<AddProductWidget> {
 
       await FirebaseFirestore.instance
           .collection('categories')
-          .doc(categoryName)
+          .doc(
+            _selectedCategory,
+          )
           .collection("products")
           .add(product);
 
@@ -129,6 +123,45 @@ class _AddProductWidgetState extends State<AddProductWidget> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.blueGrey.shade900,
+                          backgroundColor: const Color(0xFFA95EFA),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 16, horizontal: 32),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AddCategoryWidget(),
+                            ),
+                          );
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(Icons.add, color: Colors.white),
+                            SizedBox(width: 8.0),
+                            Text(
+                              'Add category',
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18,
+                                letterSpacing: 0.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -239,35 +272,43 @@ class _AddProductWidgetState extends State<AddProductWidget> {
                           Border.all(width: 2, color: Colors.deepPurpleAccent),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      child: DropdownButtonFormField<int>(
-                        decoration: const InputDecoration(
-                          labelText: 'Category',
-                          border: InputBorder.none,
-                        ),
-                        value: _selectedCategoryIndex,
-                        items: _categories
-                            .asMap()
-                            .entries
-                            .map((entry) => DropdownMenuItem(
-                                  value: entry.key,
-                                  child: Text(entry.value),
-                                ))
-                            .toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedCategoryIndex = value!;
-                          });
-                        },
-                        validator: (value) {
-                          if (value == null) {
-                            return 'Please select a category';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        child: StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('categories')
+                              .snapshots(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<QuerySnapshot> snapshot) {
+                            if (!snapshot.hasData)
+                              return const Text("Loading...");
+
+                            List<String> items = snapshot.data!.docs
+                                .map((doc) => doc['name'] as String)
+                                .toList();
+
+                            // Set _selectedCategory to the first category if it is an empty string
+                            if (_selectedCategory.isEmpty && items.isNotEmpty) {
+                              _selectedCategory = items.first;
+                            }
+
+                            return DropdownButtonFormField<String>(
+                              value:
+                                  _selectedCategory, // Use _selectedCategory as the value
+                              items: items.map((String item) {
+                                return DropdownMenuItem<String>(
+                                  value: item,
+                                  child: Text(item),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  _selectedCategory = newValue!;
+                                });
+                              },
+                            );
+                          },
+                        )),
                   ),
                 ),
                 Padding(
