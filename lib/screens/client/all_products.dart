@@ -26,8 +26,8 @@ class AllProductsGrid extends StatelessWidget {
           shrinkWrap: true,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: 10.0,
-            mainAxisSpacing: 10.0,
+            crossAxisSpacing: 5.0,
+            mainAxisSpacing: 7.0,
             childAspectRatio: 0.8,
           ),
           itemCount: documents.length,
@@ -61,7 +61,7 @@ class AllProductsGrid extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(vertical: 8),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -89,6 +89,12 @@ class AllProductsGrid extends StatelessWidget {
                   '\$${product['price']}',
                   style: const TextStyle(fontWeight: FontWeight.w400),
                 ),
+                const SizedBox(height: 8.0),
+                if (product['quantity'] == 0)
+                  Text(
+                    'Out of stock',
+                    style: const TextStyle(color: Colors.red),
+                  ),
               ],
             ),
           ),

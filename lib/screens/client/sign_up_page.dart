@@ -1,8 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_app/screens/client/client_home_screen.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -11,7 +15,23 @@ class SignUpScreen extends StatefulWidget {
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
+File? _image;
+final picker = ImagePicker();
+
 class _SignUpScreenState extends State<SignUpScreen> {
+  Future pickImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      // This is where you call setState()
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
   final _emailController = TextEditingController();
   final _firstNameController = TextEditingController();
   final _phonenumbercontroller = TextEditingController();
@@ -34,14 +54,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
         password: password,
       );
 
-      await firestore.collection('users').doc(result.user!.uid).set({
-        'firstName': firstName,
-        'uid': result.user!.uid,
-        'Phone Number': phoneNumber
-      });
+      if (_image != null) {
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('userImages')
+            .child('${result.user!.uid}.jpg');
+
+        await ref.putFile(_image!);
+
+        final url = await ref.getDownloadURL();
+
+        await firestore.collection('users').doc(result.user!.uid).set({
+          'firstName': firstName,
+          'uid': result.user!.uid,
+          'Phone Number': phoneNumber,
+          'imageUrl': url,
+        });
+      } else {
+        await firestore.collection('users').doc(result.user!.uid).set({
+          'firstName': firstName,
+          'uid': result.user!.uid,
+          'Phone Number': phoneNumber,
+        });
+      }
     } catch (e) {
-      print(e);
+      debugPrint("$e");
     }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ClientHome()),
+    );
   }
 
   @override
@@ -62,16 +105,49 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 color: Colors.black,
               ),
             ),
-            const SizedBox(height: 30),
-            SizedBox(
-              width: 250,
-              height: 250,
-              child: Image.asset(
-                ImageAssets.welcome,
-                fit: BoxFit.cover,
+            const SizedBox(
+              height: 15,
+            ),
+            if (_image != null)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CircleAvatar(
+                  radius: 80.0,
+                  child: ClipOval(
+                    child: AspectRatio(
+                      aspectRatio: 1 / 1,
+                      child: _image != null
+                          ? Image.file(
+                              _image!,
+                              fit: BoxFit.cover,
+                            )
+                          : const Icon(Icons.account_circle, size: 160.0),
+                    ),
+                  ),
+                ),
+              ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.blueGrey.shade900,
+                  backgroundColor: const Color(0xFFA95EFA),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+                ),
+                onPressed: pickImage,
+                child: const Text(
+                  'Pick Image',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(
+              height: 15,
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(

@@ -1,4 +1,6 @@
 import 'package:ecommerce_app/screens/client/cart/cart_page.dart';
+import 'package:ecommerce_app/screens/client/cart_icon.dart';
+import 'package:ecommerce_app/screens/client/orders/user_orders_screen.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,22 +8,44 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CartState extends StateNotifier<List<Map<String, dynamic>>> {
-  CartState() : super([]);
+  CartState(this.userId) : super([]);
   String userId = FirebaseAuth.instance.currentUser!.uid;
+  ValueNotifier<bool> isLoading = ValueNotifier<bool>(false);
   Future<void> addToCart(
-      Map<String, dynamic> product, BuildContext context) async {
+    Map<String, dynamic> product,
+    BuildContext context,
+    Map<String, String> colorHexValues,
+  ) async {
     try {
-      var productWithUserQuantity = {...product, 'userQuantity': 1};
-      DocumentReference docRef = await FirebaseFirestore.instance
-          .collection('carts')
-          .doc(userId)
-          .collection('items')
-          .add(productWithUserQuantity);
-      // Add the id to the product
-      productWithUserQuantity['id'] = docRef.id;
-      state = [...state, productWithUserQuantity];
+      isLoading.value = true;
 
-      // If everything goes well, show a success message
+      final firestore = FirebaseFirestore.instance;
+
+      final cartRef =
+          firestore.collection('carts').doc(userId).collection('items');
+
+      final colorHex = colorHexValues[product['color']];
+
+      final existingProductQuery = await cartRef
+          .where('selectedColor', isEqualTo: product['selectedColor'])
+          .where('productId', isEqualTo: product['productId'])
+          .get();
+
+      if (existingProductQuery.docs.isNotEmpty) {
+        var existingProduct = existingProductQuery.docs.first;
+        await cartRef.doc(existingProduct.id).update({
+          'userQuantity': existingProduct['userQuantity'] + 1,
+        });
+      } else {
+        var productWithUserQuantity = {
+          ...product,
+          'userQuantity': 1,
+          'color': colorHex
+        };
+        DocumentReference docRef = await cartRef.add(productWithUserQuantity);
+        productWithUserQuantity['id'] = docRef.id;
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Product added to cart'),
@@ -29,20 +53,21 @@ class CartState extends StateNotifier<List<Map<String, dynamic>>> {
         ),
       );
     } catch (e) {
-      // If something goes wrong, show an error message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Failed to add product to cart'),
           backgroundColor: Colors.red,
         ),
       );
+    } finally {
+      isLoading.value = false;
     }
   }
 }
 
 final cartProvider =
     StateNotifierProvider<CartState, List<Map<String, dynamic>>>(
-        (ref) => CartState());
+        (ref) => CartState(ref.read(authProvider).currentUser!.uid));
 
 class ProductDetails extends ConsumerWidget {
   final Map<String, dynamic> productData;
@@ -66,14 +91,14 @@ class ProductDetails extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: 500,
+                    height: 560,
                     width: MediaQuery.of(context).size.width,
                     child: Stack(
                       children: [
                         Positioned(
                           top: 0,
                           child: Container(
-                            height: 420,
+                            height: 480,
                             width: MediaQuery.of(context).size.width,
                             color: const Color.fromARGB(255, 232, 236, 237),
                           ),
@@ -95,17 +120,9 @@ class ProductDetails extends ConsumerWidget {
                                         Navigator.pop(context);
                                       },
                                     ),
-                                    IconButton(
-                                      icon: Image.asset(ImageAssets.bag),
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const CartPage()),
-                                        );
-                                      },
-                                    ),
+                                    ItemsNumber(
+                                        userId: FirebaseAuth
+                                            .instance.currentUser!.uid)
                                   ],
                                 ),
                               ),
@@ -131,11 +148,11 @@ class ProductDetails extends ConsumerWidget {
                                           .map((word) => word + "\n")
                                           .join(),
                                       style: const TextStyle(
-                                        fontSize: 18,
+                                        fontSize: 22,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    const SizedBox(height: 16),
+                                    const SizedBox(height: 8),
                                     const Text(
                                       "From",
                                       style: TextStyle(
@@ -147,7 +164,7 @@ class ProductDetails extends ConsumerWidget {
                                     Text(
                                       '\$${productData['price']}',
                                       style: const TextStyle(
-                                        fontSize: 18,
+                                        fontSize: 22,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -162,7 +179,7 @@ class ProductDetails extends ConsumerWidget {
                                         ),
                                       ),
                                       SizedBox(
-                                        height: 50,
+                                        height: 30,
                                         child: ListView.builder(
                                           scrollDirection: Axis.horizontal,
                                           itemCount: productColors.length,
@@ -173,14 +190,20 @@ class ProductDetails extends ConsumerWidget {
                                               child: Padding(
                                                 padding:
                                                     const EdgeInsets.all(4.0),
-                                                child: CircleAvatar(
-                                                  backgroundColor: productColors[
-                                                              index]['hex']
-                                                          is String
-                                                      ? Color(int.parse(
-                                                          '0xFF${productColors[index]['hex'].substring(1)}'))
-                                                      : Colors.transparent,
-                                                  radius: 10,
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: productColors[index]
+                                                            ['hex'] is String
+                                                        ? Color(int.parse(
+                                                            '0xFF${productColors[index]['hex'].substring(1)}'))
+                                                        : Colors.transparent,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                  ),
+                                                  width: 20,
+                                                  height: 30,
+                                                  alignment: Alignment.center,
                                                   child: selectedColor.value ==
                                                           productColors[index]
                                                       ? const Icon(Icons.check,
@@ -234,32 +257,66 @@ class ProductDetails extends ConsumerWidget {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 80),
+                          padding: const EdgeInsets.symmetric(vertical: 40),
                           child: Center(
                             child: SizedBox(
                               width: MediaQuery.of(context).size.width,
                               child: ElevatedButton(
-                                onPressed: () => ref
-                                    .read(cartProvider.notifier)
-                                    .addToCart({
-                                  ...productData,
-                                  'selectedColor': selectedColor.value
-                                }, context),
+                                onPressed: productData['quantity'] > 0
+                                    ? () {
+                                        final Map<String, String>
+                                            colorHexValues = {
+                                          'Red': '#FF0000',
+                                          'Blue': '#0000FF',
+                                          'Green': '#008000',
+                                          'Yellow': '#FFFF00',
+                                          'Black': '#000000',
+                                          'White': '#FFFFFF',
+                                        };
+
+                                        ref
+                                            .read(cartProvider.notifier)
+                                            .addToCart({
+                                          ...productData,
+                                          'selectedColor': selectedColor.value,
+                                        }, context, colorHexValues);
+                                      }
+                                    : null,
                                 style: ElevatedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20),
                                   ),
-                                  backgroundColor: const Color(0xFFA95EFA),
+                                  backgroundColor: productData['quantity'] > 0
+                                      ? const Color(0xFFA95EFA)
+                                      : Colors.grey,
                                 ),
-                                child: const Text(
-                                  'Add To Cart',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 18,
-                                    letterSpacing: 0.0,
-                                    color: Colors.white,
-                                  ),
+                                child: ValueListenableBuilder<bool>(
+                                  valueListenable: ref
+                                      .watch(cartProvider.notifier)
+                                      .isLoading,
+                                  builder: (context, isLoading, child) {
+                                    if (isLoading) {
+                                      return const SizedBox(
+                                        height: 20.0,
+                                        width: 20.0,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2.0,
+                                        ),
+                                      );
+                                    }
+
+                                    return const Text(
+                                      'Add To Cart',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 18,
+                                        letterSpacing: 0.0,
+                                        color: Colors.white,
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
                             ),

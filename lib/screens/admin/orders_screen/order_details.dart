@@ -6,14 +6,13 @@ import 'package:intl/intl.dart';
 class OrderDetailsPage extends StatelessWidget {
   final Map<String, dynamic> order;
 
-  OrderDetailsPage({required this.order});
+  const OrderDetailsPage({super.key, required this.order});
 
   @override
   Widget build(BuildContext context) {
     final userData = order['userData'];
     final cartItems = order['cartItems'] as List<dynamic>;
 
-    // Calculate total price
     final totalPrice = cartItems.fold(
       0.0,
       (double previousValue, item) =>
@@ -44,7 +43,6 @@ class OrderDetailsPage extends StatelessWidget {
             Expanded(
               child: ListView(
                 children: <Widget>[
-                  //NetworkImage(userData['photoUrl']),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: CircleAvatar(
@@ -115,10 +113,9 @@ class OrderDetailsPage extends StatelessWidget {
                                     '0xFF${item['selectedColor']['hex'].substring(1)}')),
                                 radius: 10,
                               ),
-                            SizedBox(width: 8),
+                            const SizedBox(width: 8),
                             if (item['selectedColor'] != null)
-                              Text(
-                                  'Color: ${item['selectedColor']['color']}'), // assuming the color has a 'name' property
+                              Text('Color: ${item['selectedColor']['color']}'),
                           ],
                         ),
                         trailing: Text('Quantity: ${item['userQuantity']}'),

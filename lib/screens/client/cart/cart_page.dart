@@ -1,3 +1,5 @@
+import 'package:ecommerce_app/screens/client/client_home_screen.dart';
+import 'package:ecommerce_app/screens/client/orders/user_orders_screen.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:ecommerce_app/style/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,12 +8,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CartState extends StateNotifier<List<Map<String, dynamic>>> {
-  CartState() : super([]) {
+  CartState(this.userId) : super([]) {
     loadCartItems();
   }
+
   Future<void> confirmOrder(BuildContext context) async {
     try {
-      // Get user data
+      String userId = FirebaseAuth.instance.currentUser!.uid;
+
       final userData = await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
@@ -27,7 +31,31 @@ class CartState extends StateNotifier<List<Map<String, dynamic>>> {
 
       // Add order to Firestore
       await FirebaseFirestore.instance.collection('orders').add(orderData);
+      for (var item in state) {
+        // Get the document of the item from Firestore
+        var itemDoc = await FirebaseFirestore.instance
+            .collection('categories')
+            .doc(item['category'])
+            .collection('products')
+            .doc(item['productId'])
+            .get();
 
+        // If the document exists, update the quantity
+        if (itemDoc.exists) {
+          int originalQuantity = itemDoc.data()!['quantity'];
+          int userQuantity = item['userQuantity'];
+
+          // Update the quantity
+          await FirebaseFirestore.instance
+              .collection('categories')
+              .doc(item['category'])
+              .collection('products')
+              .doc(item['productId'])
+              .update({'quantity': originalQuantity - userQuantity});
+        } else {
+          print('Item does not exist');
+        }
+      }
       // Clear current cart
       FirebaseFirestore.instance
           .collection('carts')
@@ -61,7 +89,7 @@ class CartState extends StateNotifier<List<Map<String, dynamic>>> {
     }
   }
 
-  final String userId = FirebaseAuth.instance.currentUser!.uid;
+  String userId = FirebaseAuth.instance.currentUser!.uid;
   void removeFromCart(String itemId) {
     FirebaseFirestore.instance
         .collection('carts')
@@ -145,7 +173,7 @@ class CartState extends StateNotifier<List<Map<String, dynamic>>> {
 
 final cartProvider =
     StateNotifierProvider<CartState, List<Map<String, dynamic>>>(
-        (ref) => CartState());
+        (ref) => CartState(ref.read(authProvider).currentUser!.uid));
 
 class CartPage extends ConsumerWidget {
   const CartPage({super.key});
@@ -170,7 +198,11 @@ class CartPage extends ConsumerWidget {
               children: [
                 IconButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ClientHome()),
+                    );
                   },
                   icon: Image.asset(ImageAssets.back),
                 ),
@@ -234,7 +266,7 @@ class CartPage extends ConsumerWidget {
                                       '0xFF${cart[index]['selectedColor']['hex'].substring(1)}')),
                                   radius: 5,
                                 ),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               if (cart[index]['selectedColor'] != null)
                                 Text(
                                     '${cart[index]['selectedColor']['color']}'), // assuming the color has a 'name' property
@@ -278,98 +310,121 @@ class CartPage extends ConsumerWidget {
               },
             ),
           ),
-          SizedBox(
-            height: 200,
-            child: Stack(
-              children: [
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  left: 0,
-                  child: Container(
-                    height: 110,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(
-                        color: Colors.white,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(
-                            child: SizedBox(
-                              width: 200,
-                              height: 60,
-                              child: InkWell(
-                                onTap: () => cartNotifier.confirmOrder(context),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                      colors: [
-                                        Color(0xFFBB6BD9),
-                                        Color(0xFFBB6BD9),
-                                        Color(0xFF151A6A),
-                                      ],
-                                      begin: Alignment.bottomLeft,
-                                      end: Alignment.topRight,
-                                    ),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: const Center(
-                                    child: Text(
-                                      'Confirm Order',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18,
-                                        letterSpacing: 0.0,
-                                        color: Colors.white,
+          StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('carts')
+                .doc(FirebaseAuth.instance.currentUser!.uid)
+                .collection('items')
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data!.docs.length > 0) {
+                return SizedBox(
+                  height: 200,
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        left: 0,
+                        child: Container(
+                          height: 110,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: SizedBox(
+                                    width: 200,
+                                    height: 60,
+                                    child: InkWell(
+                                      onTap: () =>
+                                          cartNotifier.confirmOrder(context),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          gradient: const LinearGradient(
+                                            colors: [
+                                              Color(0xFFBB6BD9),
+                                              Color(0xFFBB6BD9),
+                                              Color(0xFF151A6A),
+                                            ],
+                                            begin: Alignment.bottomLeft,
+                                            end: Alignment.topRight,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        child: const Center(
+                                          child: Text(
+                                            'Confirm Order',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 18,
+                                              letterSpacing: 0.0,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(22.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Text(
-                                "TOTAL",
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w800,
-                                    color: AppColors.cartpink),
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    '\$${totalPrice.toString()}',
-                                    style: const TextStyle(
-                                        fontSize: 25,
-                                        fontWeight: FontWeight.w800,
-                                        color: AppColors.totalpink),
-                                  ),
-                                ],
+                              Padding(
+                                padding: const EdgeInsets.all(22.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      "TOTAL",
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w800,
+                                          color: AppColors.cartpink),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          '\$${totalPrice.toString()}',
+                                          style: const TextStyle(
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.w800,
+                                              color: AppColors.totalpink),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
                         ),
-                      ],
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 400),
+                  child: const Center(
+                    child: Text(
+                      "No items in your cart",
+                      style: TextStyle(fontSize: 25),
                     ),
                   ),
-                ),
-              ],
-            ),
+                );
+              }
+            },
           ),
         ],
       ),

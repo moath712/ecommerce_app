@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_app/screens/client/cart_icon.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -60,10 +61,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           Navigator.pop(context);
                         },
                       ),
-                      GestureDetector(
-                        onTap: () {},
-                        child: Image.asset(ImageAssets.bag),
-                      ),
+                      ItemsNumber(
+                          userId: FirebaseAuth.instance.currentUser!.uid)
                     ],
                   ),
                 ),
@@ -187,9 +186,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 child: ClipOval(
                                   child: AspectRatio(
                                     aspectRatio: 1 / 1,
-                                    child: data['photoUrl'] != null
+                                    child: widget.userData['imageUrl'] != null
                                         ? Image.network(
-                                            data['photoUrl'],
+                                            widget.userData['imageUrl'],
                                             fit: BoxFit.cover,
                                           )
                                         : const Icon(Icons.account_circle,

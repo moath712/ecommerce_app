@@ -1,5 +1,6 @@
 import 'package:ecommerce_app/screens/client/all_products.dart';
 import 'package:ecommerce_app/screens/client/cart/cart_page.dart';
+import 'package:ecommerce_app/screens/client/cart_icon.dart';
 import 'package:ecommerce_app/screens/client/orders/user_orders_screen.dart';
 import 'package:ecommerce_app/screens/client/products_screen.dart';
 import 'package:ecommerce_app/screens/client/profile_screen/profile_page.dart';
@@ -65,9 +66,9 @@ class _ClientHomeState extends State<ClientHome> {
                                 child: ClipOval(
                                   child: AspectRatio(
                                     aspectRatio: 1 / 1,
-                                    child: userData['photoUrl'] != null
+                                    child: userData['imageUrl'] != null
                                         ? Image.network(
-                                            userData['photoUrl'],
+                                            userData['imageUrl'],
                                             fit: BoxFit.cover,
                                             errorBuilder: (BuildContext context,
                                                 Object exception,
@@ -171,15 +172,7 @@ class _ClientHomeState extends State<ClientHome> {
                   },
                   icon: Image.asset(ImageAssets.menu),
                 ),
-                IconButton(
-                  icon: Image.asset(ImageAssets.bag),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const CartPage()),
-                    );
-                  },
-                ),
+                ItemsNumber(userId: FirebaseAuth.instance.currentUser!.uid)
               ],
             ),
           ),
@@ -200,11 +193,11 @@ class _ClientHomeState extends State<ClientHome> {
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
-                  return Text('Something went wrong');
+                  return const Text('Something went wrong');
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 }
 
                 return ListView.builder(

@@ -19,7 +19,6 @@ class _AddProductWidgetState extends State<AddProductWidget> {
   final _imageController = TextEditingController();
   final _subTitleController = TextEditingController();
   final _descriptionController = TextEditingController();
-  late int _selectedCategoryIndex = 0;
 
   final Map<String, String> _colorHexValues = {
     'Red': '#FF0000',
@@ -29,8 +28,6 @@ class _AddProductWidgetState extends State<AddProductWidget> {
     'Black': '#000000',
     'White': '#FFFFFF',
   };
-  final Stream<QuerySnapshot> _categoriesStream =
-      FirebaseFirestore.instance.collection('categories').snapshots();
   final List<Map<String, String>> _selectedColorsWithHex = [];
 
   List<Widget> _buildColorCheckboxes() {
@@ -79,13 +76,15 @@ class _AddProductWidgetState extends State<AddProductWidget> {
         'colors': _selectedColorsWithHex.toList(),
       };
 
-      await FirebaseFirestore.instance
+      // Create a new document and get reference
+      DocumentReference docRef = await FirebaseFirestore.instance
           .collection('categories')
-          .doc(
-            _selectedCategory,
-          )
+          .doc(_selectedCategory)
           .collection("products")
           .add(product);
+
+      // Update the product with its ID
+      await docRef.update({'productId': docRef.id});
 
       _titleController.clear();
       _priceController.clear();
@@ -98,7 +97,7 @@ class _AddProductWidgetState extends State<AddProductWidget> {
     }
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Product added succefully'),
+        content: Text('Product added successfully'),
         backgroundColor: Colors.green,
       ),
     );
@@ -280,8 +279,9 @@ class _AddProductWidgetState extends State<AddProductWidget> {
                               .snapshots(),
                           builder: (BuildContext context,
                               AsyncSnapshot<QuerySnapshot> snapshot) {
-                            if (!snapshot.hasData)
+                            if (!snapshot.hasData) {
                               return const Text("Loading...");
+                            }
 
                             List<String> items = snapshot.data!.docs
                                 .map((doc) => doc['name'] as String)

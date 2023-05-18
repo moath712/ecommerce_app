@@ -1,3 +1,4 @@
+import 'package:ecommerce_app/screens/client/cart_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -50,10 +51,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                           Navigator.pop(context);
                         },
                       ),
-                      GestureDetector(
-                        onTap: () {},
-                        child: Image.asset(ImageAssets.bag),
-                      ),
+                      ItemsNumber(
+                          userId: FirebaseAuth.instance.currentUser!.uid)
                     ],
                   ),
                 ),
@@ -204,9 +203,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                 child: ClipOval(
                                   child: AspectRatio(
                                     aspectRatio: 1 / 1,
-                                    child: data['photoUrl'] != null
+                                    child: data['imageUrl'] != null
                                         ? Image.network(
-                                            data['photoUrl'],
+                                            data['imageUrl'],
                                             fit: BoxFit.cover,
                                           )
                                         : const Icon(Icons.account_circle,
