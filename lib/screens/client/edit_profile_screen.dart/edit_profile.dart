@@ -188,7 +188,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       DocumentReference docRef =
           _firestore.collection('users').doc(_auth.currentUser!.uid);
 
-      docRef.update({'photoUrl': url});
+      docRef.update({'imageUrl': url});
 
       print('URL Is: $url');
     } catch (e) {

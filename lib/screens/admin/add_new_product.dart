@@ -110,282 +110,295 @@ class _AddProductWidgetState extends State<AddProductWidget> {
           backgroundColor: const Color.fromARGB(255, 232, 236, 237),
           body: Center(
             child: SingleChildScrollView(
-              child: Container(
-                color: Colors.white,
-                width: MediaQuery.of(context).size.width / 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        const Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          child: Text(
-                            "Add your new product details :",
-                            style: TextStyle(
-                                fontSize: 25, fontWeight: FontWeight.w300),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(width: 2, color: Colors.grey),
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    color: Colors.white,
+                    width: MediaQuery.of(context).size.width / 2,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 20,
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
+                            const Padding(
+                              padding: EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 8),
-                              child: TextFormField(
-                                controller: _titleController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Title',
-                                  border: InputBorder.none,
-                                ),
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return 'Please enter a title';
-                                  }
-                                  return null;
-                                },
+                              child: Text(
+                                "Add your new product details :",
+                                style: TextStyle(
+                                    fontSize: 25, fontWeight: FontWeight.w300),
                               ),
                             ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(width: 2, color: Colors.grey),
-                            ),
-                            child: Padding(
+                            Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 8),
-                              child: TextFormField(
-                                controller: _priceController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Price',
-                                  border: InputBorder.none,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border:
+                                      Border.all(width: 2, color: Colors.grey),
                                 ),
-                                keyboardType: TextInputType.number,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return 'Please enter a price';
-                                  }
-                                  return null;
-                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  child: TextFormField(
+                                    controller: _titleController,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Title',
+                                      border: InputBorder.none,
+                                    ),
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Please enter a title';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(width: 2, color: Colors.grey),
-                            ),
-                            child: Padding(
+                            Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 8),
-                              child: TextFormField(
-                                controller: _quantityController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Quantity',
-                                  border: InputBorder.none,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border:
+                                      Border.all(width: 2, color: Colors.grey),
                                 ),
-                                keyboardType: TextInputType.number,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return 'Please enter the quantity';
-                                  }
-                                  return null;
-                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  child: TextFormField(
+                                    controller: _priceController,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Price',
+                                      border: InputBorder.none,
+                                    ),
+                                    keyboardType: TextInputType.number,
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Please enter a price';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(width: 2, color: Colors.grey),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border:
+                                      Border.all(width: 2, color: Colors.grey),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  child: TextFormField(
+                                    controller: _quantityController,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Quantity',
+                                      border: InputBorder.none,
+                                    ),
+                                    keyboardType: TextInputType.number,
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Please enter the quantity';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                              ),
                             ),
-                            child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 8),
-                                child: StreamBuilder<QuerySnapshot>(
-                                  stream: FirebaseFirestore.instance
-                                      .collection('categories')
-                                      .snapshots(),
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot<QuerySnapshot> snapshot) {
-                                    if (!snapshot.hasData) {
-                                      return const Text("Loading...");
-                                    }
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border:
+                                      Border.all(width: 2, color: Colors.grey),
+                                ),
+                                child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 8),
+                                    child: StreamBuilder<QuerySnapshot>(
+                                      stream: FirebaseFirestore.instance
+                                          .collection('categories')
+                                          .snapshots(),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<QuerySnapshot>
+                                              snapshot) {
+                                        if (!snapshot.hasData) {
+                                          return const Text("Loading...");
+                                        }
 
-                                    List<String> items = snapshot.data!.docs
-                                        .map((doc) => doc['name'] as String)
-                                        .toList();
+                                        List<String> items = snapshot.data!.docs
+                                            .map((doc) => doc['name'] as String)
+                                            .toList();
 
-                                    // Set _selectedCategory to the first category if it is an empty string
-                                    if (_selectedCategory.isEmpty &&
-                                        items.isNotEmpty) {
-                                      _selectedCategory = items.first;
-                                    }
+                                        if (_selectedCategory.isEmpty &&
+                                            items.isNotEmpty) {
+                                          _selectedCategory = items.first;
+                                        }
 
-                                    return DropdownButtonFormField<String>(
-                                      value:
-                                          _selectedCategory, // Use _selectedCategory as the value
-                                      items: items.map((String item) {
-                                        return DropdownMenuItem<String>(
-                                          value: item,
-                                          child: Text(item),
+                                        return DropdownButtonFormField<String>(
+                                          value: _selectedCategory,
+                                          items: items.map((String item) {
+                                            return DropdownMenuItem<String>(
+                                              value: item,
+                                              child: Text(item),
+                                            );
+                                          }).toList(),
+                                          onChanged: (String? newValue) {
+                                            setState(() {
+                                              _selectedCategory = newValue!;
+                                            });
+                                          },
                                         );
-                                      }).toList(),
-                                      onChanged: (String? newValue) {
-                                        setState(() {
-                                          _selectedCategory = newValue!;
-                                        });
                                       },
-                                    );
-                                  },
-                                )),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(width: 2, color: Colors.grey),
+                                    )),
+                              ),
                             ),
-                            child: Padding(
+                            Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 8),
-                              child: TextFormField(
-                                controller: _imageController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Image URL',
-                                  border: InputBorder.none,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border:
+                                      Border.all(width: 2, color: Colors.grey),
                                 ),
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return 'Please enter an image URL';
-                                  }
-                                  return null;
-                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  child: TextFormField(
+                                    controller: _imageController,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Image URL',
+                                      border: InputBorder.none,
+                                    ),
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Please enter an image URL';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(width: 2, color: Colors.grey),
-                            ),
-                            child: Padding(
+                            Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 8),
-                              child: TextFormField(
-                                controller: _subTitleController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Subtitle',
-                                  border: InputBorder.none,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border:
+                                      Border.all(width: 2, color: Colors.grey),
                                 ),
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return 'Please enter a subtitle';
-                                  }
-                                  return null;
-                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  child: TextFormField(
+                                    controller: _subTitleController,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Subtitle',
+                                      border: InputBorder.none,
+                                    ),
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Please enter a subtitle';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(width: 2, color: Colors.grey),
-                            ),
-                            child: Padding(
+                            Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 8),
-                              child: TextFormField(
-                                controller: _descriptionController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Description',
-                                  border: InputBorder.none,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border:
+                                      Border.all(width: 2, color: Colors.grey),
                                 ),
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return 'Please enter a description';
-                                  }
-                                  return null;
-                                },
-                                maxLines: 4,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  child: TextFormField(
+                                    controller: _descriptionController,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Description',
+                                      border: InputBorder.none,
+                                    ),
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Please enter a description';
+                                      }
+                                      return null;
+                                    },
+                                    maxLines: 4,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                        const Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          child: Text(
-                            "choose the color:",
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: _buildColorCheckboxes(),
-                          ),
-                        ),
-                        const SizedBox(height: 16.0),
-                        Center(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.blueGrey.shade900,
-                              backgroundColor: const Color(0xFFA95EFA),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              child: Text(
+                                "choose the color:",
+                                style: TextStyle(fontSize: 18),
                               ),
+                            ),
+                            Padding(
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 16, horizontal: 32),
+                                  horizontal: 16, vertical: 8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: _buildColorCheckboxes(),
+                              ),
                             ),
-                            onPressed: _submitForm,
-                            child: const Text(
-                              'Add Product',
-                              style: TextStyle(color: Colors.white),
+                            const SizedBox(height: 16.0),
+                            Center(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.blueGrey.shade900,
+                                  backgroundColor: const Color(0xFFA95EFA),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 16, horizontal: 32),
+                                ),
+                                onPressed: _submitForm,
+                                child: const Text(
+                                  'Add Product',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
             ),
           ),

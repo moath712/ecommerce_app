@@ -119,6 +119,9 @@ class _ClientHomeState extends State<ClientHome> {
                     color: Color(0xff171717)),
               ),
             ),
+            SizedBox(
+              height: 30,
+            ),
             const AllProductsGrid()
           ],
         ),

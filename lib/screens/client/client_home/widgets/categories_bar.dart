@@ -13,7 +13,7 @@ class CategoriesBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 200,
+      height: 250,
       child: StreamBuilder<QuerySnapshot>(
         stream: firestore.collection('categories').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -46,33 +46,46 @@ class CategoriesBar extends StatelessWidget {
                       ),
                     );
                   },
-                  child: Card(
-                    color: const Color.fromARGB(255, 232, 236, 237),
-                    shadowColor: Colors.transparent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                  child: Container(
+                    width: 190,
+                    height: 250,
+                    child: Stack(
                       children: [
-                        Expanded(
-                          child: Image.network(
-                            image,
-                            fit: BoxFit.cover,
+                        Positioned(
+                          bottom: 0,
+                          child: Image.asset(
+                            "assets/images/categorybox.png",
+                            width: 190,
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
+                        Center(
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(title,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold)),
-                              Text(
-                                ' $numOfProducts+ Products',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w400),
+                              Expanded(
+                                child: Image.network(
+                                  image,
+                                  width: 220,
+                                  height: 220,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 20),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(title,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                    Text(
+                                      ' $numOfProducts+ Products',
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),

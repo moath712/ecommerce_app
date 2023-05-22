@@ -1,5 +1,6 @@
 import 'package:ecommerce_app/screens/client/cart_icon.dart';
-import 'package:ecommerce_app/screens/client/product_details.dart';
+import 'package:ecommerce_app/screens/client/product_details/product_details.dart';
+
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,7 @@ class _CategoryProductsState extends State<CategoryProducts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -68,9 +70,9 @@ class _CategoryProductsState extends State<CategoryProducts> {
                   shrinkWrap: true,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
+                    crossAxisSpacing: 5.0,
+                    mainAxisSpacing: 7.0,
                     childAspectRatio: 0.8,
-                    crossAxisSpacing: 4,
-                    mainAxisSpacing: 4,
                   ),
                   itemCount: snapshot.data!.docs.length,
                   itemBuilder: (BuildContext context, int index) {

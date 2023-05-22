@@ -26,7 +26,7 @@ class CheckOutBar extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
           return SizedBox(
-            height: 200,
+            height: 100,
             child: Stack(
               children: [
                 Positioned(
