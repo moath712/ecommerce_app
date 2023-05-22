@@ -40,7 +40,8 @@ class ItemsNumber extends StatelessWidget {
               },
             ),
             Positioned(
-              right: 0,
+              top: 2,
+              right: 4,
               child: Container(
                 padding: const EdgeInsets.all(1),
                 decoration: BoxDecoration(

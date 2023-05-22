@@ -1,4 +1,3 @@
-import 'package:ecommerce_app/screens/client/cart/cart_page.dart';
 import 'package:ecommerce_app/screens/client/cart_icon.dart';
 import 'package:ecommerce_app/screens/client/orders/user_orders_screen.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
@@ -86,46 +85,41 @@ class ProductDetails extends ConsumerWidget {
         valueListenable: selectedColor,
         builder: (context, value, child) {
           return Scaffold(
+            appBar: AppBar(
+              backgroundColor: const Color.fromARGB(255, 232, 236, 237),
+              elevation: 0,
+              leading: IconButton(
+                icon: Image.asset(ImageAssets.back),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              actions: [
+                ItemsNumber(userId: FirebaseAuth.instance.currentUser!.uid)
+              ],
+            ),
             body: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: 560,
+                    height: 460,
                     width: MediaQuery.of(context).size.width,
                     child: Stack(
                       children: [
                         Positioned(
                           top: 0,
                           child: Container(
-                            height: 480,
+                            height: 380,
                             width: MediaQuery.of(context).size.width,
                             color: const Color.fromARGB(255, 232, 236, 237),
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 50),
+                          padding: const EdgeInsets.only(top: 1),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    IconButton(
-                                      icon: Image.asset(ImageAssets.back),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ItemsNumber(
-                                        userId: FirebaseAuth
-                                            .instance.currentUser!.uid)
-                                  ],
-                                ),
-                              ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
@@ -206,9 +200,14 @@ class ProductDetails extends ConsumerWidget {
                                                   alignment: Alignment.center,
                                                   child: selectedColor.value ==
                                                           productColors[index]
-                                                      ? const Icon(Icons.check,
+                                                      ? Icon(Icons.check,
                                                           size: 15,
-                                                          color: Colors.white)
+                                                          color: productColors[
+                                                                          index]
+                                                                      ['hex'] ==
+                                                                  "#FFFFFF"
+                                                              ? Colors.black
+                                                              : Colors.white)
                                                       : null,
                                                 ),
                                               ),
@@ -229,9 +228,12 @@ class ProductDetails extends ConsumerWidget {
                           child: SizedBox(
                             width: 320,
                             height: 320,
-                            child: Image.network(
-                              productData['imageURL'],
-                              fit: BoxFit.cover,
+                            child: Hero(
+                              tag: 'hero-tag-${productData['productId']}',
+                              child: Image.network(
+                                productData['imageURL'],
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         ),
@@ -261,63 +263,64 @@ class ProductDetails extends ConsumerWidget {
                           child: Center(
                             child: SizedBox(
                               width: MediaQuery.of(context).size.width,
-                              child: ElevatedButton(
-                                onPressed: productData['quantity'] > 0
-                                    ? () {
-                                        final Map<String, String>
-                                            colorHexValues = {
-                                          'Red': '#FF0000',
-                                          'Blue': '#0000FF',
-                                          'Green': '#008000',
-                                          'Yellow': '#FFFF00',
-                                          'Black': '#000000',
-                                          'White': '#FFFFFF',
-                                        };
+                              child: ValueListenableBuilder<bool>(
+                                valueListenable:
+                                    ref.watch(cartProvider.notifier).isLoading,
+                                builder: (context, isLoading, child) {
+                                  return ElevatedButton(
+                                    onPressed: (productData['quantity'] > 0 &&
+                                            !isLoading)
+                                        ? () {
+                                            final Map<String, String>
+                                                colorHexValues = {
+                                              'Red': '#FF0000',
+                                              'Blue': '#0000FF',
+                                              'Green': '#008000',
+                                              'Yellow': '#FFFF00',
+                                              'Black': '#000000',
+                                              'White': '#FFFFFF',
+                                            };
 
-                                        ref
-                                            .read(cartProvider.notifier)
-                                            .addToCart({
-                                          ...productData,
-                                          'selectedColor': selectedColor.value,
-                                        }, context, colorHexValues);
-                                      }
-                                    : null,
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  backgroundColor: productData['quantity'] > 0
-                                      ? const Color(0xFFA95EFA)
-                                      : Colors.grey,
-                                ),
-                                child: ValueListenableBuilder<bool>(
-                                  valueListenable: ref
-                                      .watch(cartProvider.notifier)
-                                      .isLoading,
-                                  builder: (context, isLoading, child) {
-                                    if (isLoading) {
-                                      return const SizedBox(
-                                        height: 20.0,
-                                        width: 20.0,
-                                        child: CircularProgressIndicator(
-                                          color: Colors.white,
-                                          strokeWidth: 2.0,
-                                        ),
-                                      );
-                                    }
-
-                                    return const Text(
-                                      'Add To Cart',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18,
-                                        letterSpacing: 0.0,
-                                        color: Colors.white,
+                                            ref
+                                                .read(cartProvider.notifier)
+                                                .addToCart({
+                                              ...productData,
+                                              'selectedColor':
+                                                  selectedColor.value,
+                                            }, context, colorHexValues);
+                                          }
+                                        : null,
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
                                       ),
-                                    );
-                                  },
-                                ),
+                                      backgroundColor:
+                                          productData['quantity'] > 0 &&
+                                                  !isLoading
+                                              ? const Color(0xFFA95EFA)
+                                              : Colors.grey,
+                                    ),
+                                    child: isLoading
+                                        ? const SizedBox(
+                                            height: 20.0,
+                                            width: 20.0,
+                                            child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                              strokeWidth: 2.0,
+                                            ),
+                                          )
+                                        : const Text(
+                                            'Add To Cart',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 18,
+                                              letterSpacing: 0.0,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                  );
+                                },
                               ),
                             ),
                           ),

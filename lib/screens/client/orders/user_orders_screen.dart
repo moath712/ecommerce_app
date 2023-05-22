@@ -39,7 +39,7 @@ class UserOrdersPage extends ConsumerWidget {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 50,
           ),
           Padding(
@@ -92,5 +92,4 @@ class UserOrdersPage extends ConsumerWidget {
   }
 }
 
-// Replace with your own auth provider
 final authProvider = Provider<FirebaseAuth>((ref) => FirebaseAuth.instance);

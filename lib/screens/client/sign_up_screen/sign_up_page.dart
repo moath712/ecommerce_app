@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ecommerce_app/screens/client/client_home_screen.dart';
-import 'package:ecommerce_app/style/assets_manager.dart';
+import 'package:ecommerce_app/screens/client/client_home/client_home_screen.dart';
+import 'package:ecommerce_app/screens/client/sign_up_screen/widgets/email_field.dart';
+import 'package:ecommerce_app/screens/client/sign_up_screen/widgets/name_field.dart';
+import 'package:ecommerce_app/screens/client/sign_up_screen/widgets/number_field.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -23,7 +25,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     setState(() {
-      // This is where you call setState()
       if (pickedFile != null) {
         _image = File(pickedFile.path);
       } else {
@@ -77,20 +78,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
           'Phone Number': phoneNumber,
         });
       }
+      if (context.mounted) {}
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const ClientHome()),
+      );
     } catch (e) {
       debugPrint("$e");
     }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const ClientHome()),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffFEDCE0),
+      backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Column(
@@ -148,39 +149,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             const SizedBox(
               height: 15,
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                controller: _emailController,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your email address';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  labelStyle: const TextStyle(color: Colors.black),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.red),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.orange),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.red),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.red),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  fillColor: Colors.white,
-                ),
-              ),
-            ),
+            EmailField(emailController: _emailController),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
@@ -221,73 +190,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                controller: _firstNameController,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your first name';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  labelText: 'First Name',
-                  labelStyle: const TextStyle(color: Colors.black),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.red),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.orange),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.red),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.red),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  fillColor: Colors.white,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                controller: _phonenumbercontroller,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your Phone Number';
-                  }
-                  return null;
-                },
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Phone Number',
-                  labelStyle: const TextStyle(color: Colors.black),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.red),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.orange),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.red),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.red),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  fillColor: Colors.white,
-                ),
-              ),
-            ),
+            NameWidget(firstNameController: _firstNameController),
+            NumberWidget(phonenumbercontroller: _phonenumbercontroller),
             const SizedBox(height: 16),
             ElevatedButton(
               style: ElevatedButton.styleFrom(

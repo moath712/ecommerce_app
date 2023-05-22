@@ -1,6 +1,7 @@
-import 'package:ecommerce_app/screens/client/cart/cart_page.dart';
+import 'package:ecommerce_app/screens/client/cart_icon.dart';
 import 'package:ecommerce_app/screens/client/product_details.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -30,46 +31,24 @@ class _CategoryProductsState extends State<CategoryProducts> {
         .snapshots();
   }
 
-  List<Widget> _buildColorCheckboxes(List<dynamic> colors) {
-    return colors.map((color) {
-      return CheckboxListTile(
-        title: Text(color),
-        value: true,
-        onChanged: (bool? value) {},
-      );
-    }).toList();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: Image.asset(ImageAssets.back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: [ItemsNumber(userId: FirebaseAuth.instance.currentUser!.uid)],
+      ),
       body: Column(
         children: [
           const SizedBox(
             height: 60,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Image.asset(ImageAssets.back),
-                ),
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const CartPage()),
-                    );
-                  },
-                  icon: Image.asset(ImageAssets.bag),
-                ),
-              ],
-            ),
           ),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
@@ -129,10 +108,13 @@ class _CategoryProductsState extends State<CategoryProducts> {
                                     borderRadius: const BorderRadius.vertical(
                                       top: Radius.circular(20),
                                     ),
-                                    child: Image.network(
-                                      product['imageURL'],
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
+                                    child: Hero(
+                                      tag: 'hero-tag-${product['productId']}',
+                                      child: Image.network(
+                                        product['imageURL'],
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                      ),
                                     ),
                                   ),
                                 ),

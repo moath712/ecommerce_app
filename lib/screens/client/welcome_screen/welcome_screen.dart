@@ -1,8 +1,8 @@
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:flutter/material.dart';
-import 'home_widgets/forgot_password.dart';
-import 'home_widgets/login_btn.dart';
-import 'home_widgets/sign_up_btn.dart';
+import 'widgets/forgot_password.dart';
+import 'widgets/login_btn.dart';
+import 'widgets/sign_up_btn.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -12,7 +12,7 @@ class WelcomeScreen extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: const Color(0xffFEDCE0),
+        backgroundColor: Colors.white,
         body: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

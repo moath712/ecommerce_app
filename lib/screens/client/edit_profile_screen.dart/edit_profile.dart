@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/screens/client/cart_icon.dart';
+import 'package:ecommerce_app/screens/client/edit_profile_screen.dart/widgets/name_edit.dart';
+import 'package:ecommerce_app/screens/client/edit_profile_screen.dart/widgets/number_edit.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -10,7 +12,7 @@ import 'package:image_picker/image_picker.dart';
 class EditProfilePage extends StatefulWidget {
   final Map<String, dynamic> userData;
 
-  const EditProfilePage({required this.userData});
+  const EditProfilePage({super.key, required this.userData});
 
   @override
   State<EditProfilePage> createState() => _EditProfilePageState();
@@ -34,6 +36,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Image.asset(ImageAssets.back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: [ItemsNumber(userId: FirebaseAuth.instance.currentUser!.uid)],
+      ),
       resizeToAvoidBottomInset: false,
       body: FutureBuilder<DocumentSnapshot>(
         future:
@@ -45,27 +58,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
           }
 
           if (snapshot.connectionState == ConnectionState.done) {
-            Map<String, dynamic> data =
-                snapshot.data!.data() as Map<String, dynamic>;
             return Column(
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(
-                      top: 70, bottom: 0, right: 8, left: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        icon: Image.asset(ImageAssets.back),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                      ItemsNumber(
-                          userId: FirebaseAuth.instance.currentUser!.uid)
-                    ],
-                  ),
-                ),
                 Expanded(
                   child: Stack(
                     children: [
@@ -83,74 +77,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 75, bottom: 16, right: 8, left: 8),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: const Color.fromARGB(
-                                        255, 232, 236, 237),
-                                    borderRadius: BorderRadius.circular(25),
-                                    border: Border.all(
-                                        width: 2,
-                                        color: Colors.deepPurpleAccent),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      IconButton(
-                                        icon: const Icon(
-                                          Icons.person,
-                                          color: Colors.black,
-                                        ),
-                                        onPressed: () {},
-                                      ),
-                                      Expanded(
-                                        child: TextField(
-                                          controller: _firstNameController,
-                                          style: const TextStyle(fontSize: 18),
-                                          decoration: const InputDecoration(
-                                            border: InputBorder.none,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 16, bottom: 16, right: 8, left: 8),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: const Color.fromARGB(
-                                        255, 232, 236, 237),
-                                    borderRadius: BorderRadius.circular(25),
-                                    border: Border.all(
-                                        width: 2,
-                                        color: Colors.deepPurpleAccent),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      IconButton(
-                                        icon: const Icon(
-                                          Icons.phone_android,
-                                          color: Colors.black,
-                                        ),
-                                        onPressed: () {},
-                                      ),
-                                      Expanded(
-                                        child: TextField(
-                                          controller: _phoneNumberController,
-                                          style: const TextStyle(fontSize: 18),
-                                          decoration: const InputDecoration(
-                                            border: InputBorder.none,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                              NameField(
+                                  firstNameController: _firstNameController),
+                              PhoneNumber(
+                                  phoneNumberController:
+                                      _phoneNumberController),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: ElevatedButton(
@@ -273,7 +204,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       'firstName': _firstNameController.text,
       'Phone Number': _phoneNumberController.text,
     });
-
+    if (context.mounted) {}
     Navigator.pop(context);
   }
 }

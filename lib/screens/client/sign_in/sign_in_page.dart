@@ -1,4 +1,4 @@
-import 'package:ecommerce_app/screens/client/client_home_screen.dart';
+import 'package:ecommerce_app/screens/client/client_home/client_home_screen.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffFEDCE0),
+      backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Container(

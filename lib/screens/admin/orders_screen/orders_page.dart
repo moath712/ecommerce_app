@@ -1,5 +1,4 @@
 import 'package:ecommerce_app/screens/admin/orders_screen/order_details.dart';
-import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -35,16 +34,8 @@ class OrdersPage extends ConsumerWidget {
     return Scaffold(
       body: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: Image.asset(ImageAssets.back),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
+          const SizedBox(
+            height: 50,
           ),
           Expanded(
             child: ListView.builder(
@@ -67,7 +58,7 @@ class OrdersPage extends ConsumerWidget {
                   subtitle: Text(
                       'Placed at ${DateFormat.yMd().add_jm().format(order['timestamp'].toDate())}, Total: \$${totalPrice.toStringAsFixed(2)}'),
                   leading: CircleAvatar(
-                    backgroundImage: NetworkImage(userData['photoUrl']),
+                    backgroundImage: NetworkImage(userData['imageUrl']),
                     radius: 30,
                   ),
                   children: [

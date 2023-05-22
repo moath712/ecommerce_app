@@ -1,4 +1,4 @@
-import 'package:ecommerce_app/screens/client/client_home_screen.dart';
+import 'package:ecommerce_app/screens/client/cart/widgets/checkout_bar.dart';
 import 'package:ecommerce_app/screens/client/orders/user_orders_screen.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:ecommerce_app/style/colors.dart';
@@ -189,28 +189,22 @@ class CartPage extends ConsumerWidget {
             ((element['price'] ?? 0) * (element['userQuantity'] ?? 1)));
 
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Image.asset(ImageAssets.back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: const Text("My Cart",
+            style: TextStyle(fontSize: 30, color: AppColors.cartpink)),
+        centerTitle: true,
+      ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 60, left: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ClientHome()),
-                    );
-                  },
-                  icon: Image.asset(ImageAssets.back),
-                ),
-              ],
-            ),
-          ),
-          const Text("My Cart",
-              style: TextStyle(fontSize: 30, color: AppColors.cartpink)),
           Expanded(
             child: ListView.builder(
               itemCount: cart.length,
@@ -219,15 +213,8 @@ class CartPage extends ConsumerWidget {
                   margin:
                       const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
+                    color: Color.fromARGB(255, 232, 236, 237),
+                    boxShadow: [],
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
@@ -278,8 +265,36 @@ class CartPage extends ConsumerWidget {
                         children: [
                           IconButton(
                             icon: const Icon(Icons.delete),
-                            onPressed: () =>
-                                cartNotifier.removeFromCart(cart[index]['id']),
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Remove from cart'),
+                                    content: const Text(
+                                        'Are you sure you want to remove this item from your cart?'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('CANCEL'),
+                                        onPressed: () {
+                                          Navigator.of(context)
+                                              .pop(); // Dismiss the dialog
+                                        },
+                                      ),
+                                      TextButton(
+                                        child: const Text('YES'),
+                                        onPressed: () {
+                                          cartNotifier.removeFromCart(
+                                              cart[index]['id']);
+                                          Navigator.of(context)
+                                              .pop(); // Dismiss the dialog
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
                           ),
                           Text(
                             '${cart[index]['userQuantity']}',
@@ -310,122 +325,7 @@ class CartPage extends ConsumerWidget {
               },
             ),
           ),
-          StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection('carts')
-                .doc(FirebaseAuth.instance.currentUser!.uid)
-                .collection('items')
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData && snapshot.data!.docs.length > 0) {
-                return SizedBox(
-                  height: 200,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        left: 0,
-                        child: Container(
-                          height: 110,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                              color: Colors.white,
-                              width: 2,
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Center(
-                                  child: SizedBox(
-                                    width: 200,
-                                    height: 60,
-                                    child: InkWell(
-                                      onTap: () =>
-                                          cartNotifier.confirmOrder(context),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          gradient: const LinearGradient(
-                                            colors: [
-                                              Color(0xFFBB6BD9),
-                                              Color(0xFFBB6BD9),
-                                              Color(0xFF151A6A),
-                                            ],
-                                            begin: Alignment.bottomLeft,
-                                            end: Alignment.topRight,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                        child: const Center(
-                                          child: Text(
-                                            'Confirm Order',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 18,
-                                              letterSpacing: 0.0,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(22.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      "TOTAL",
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w800,
-                                          color: AppColors.cartpink),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          '\$${totalPrice.toString()}',
-                                          style: const TextStyle(
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.w800,
-                                              color: AppColors.totalpink),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              } else {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 400),
-                  child: const Center(
-                    child: Text(
-                      "No items in your cart",
-                      style: TextStyle(fontSize: 25),
-                    ),
-                  ),
-                );
-              }
-            },
-          ),
+          CheckOutBar(cartNotifier: cartNotifier, totalPrice: totalPrice),
         ],
       ),
     );

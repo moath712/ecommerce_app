@@ -1,4 +1,4 @@
-import 'package:ecommerce_app/screens/client/sign_up_page.dart';
+import 'package:ecommerce_app/screens/client/sign_up_screen/sign_up_page.dart';
 import 'package:flutter/material.dart';
 
 class SignUpButton extends StatelessWidget {

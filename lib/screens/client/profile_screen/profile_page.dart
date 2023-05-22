@@ -4,7 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ecommerce_app/screens/client/profile_screen/edit_profile.dart';
+import 'package:ecommerce_app/screens/client/edit_profile_screen.dart/edit_profile.dart';
 import 'dart:io';
 
 import '../../../style/assets_manager.dart';
@@ -25,6 +25,17 @@ class _UserProfilePageState extends State<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent, // Makes the AppBar transparent
+        elevation: 0, // Removes the shadow beneath the AppBar
+        leading: IconButton(
+          icon: Image.asset(ImageAssets.back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: [ItemsNumber(userId: FirebaseAuth.instance.currentUser!.uid)],
+      ),
       body: FutureBuilder<DocumentSnapshot>(
         future:
             _firestore.collection('users').doc(_auth.currentUser!.uid).get(),
@@ -39,23 +50,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 snapshot.data!.data() as Map<String, dynamic>;
             return Column(
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(
-                      top: 70, bottom: 0, right: 8, left: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        icon: Image.asset(ImageAssets.back),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                      ItemsNumber(
-                          userId: FirebaseAuth.instance.currentUser!.uid)
-                    ],
-                  ),
-                ),
                 Expanded(
                   child: Stack(
                     children: [

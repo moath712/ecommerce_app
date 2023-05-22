@@ -23,6 +23,7 @@ class AllProductsGrid extends StatelessWidget {
 
         return GridView.builder(
           padding: EdgeInsets.zero,
+          physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
@@ -72,10 +73,14 @@ class AllProductsGrid extends StatelessWidget {
                       borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(20),
                       ),
-                      child: Image.network(
-                        product['imageURL'],
-                        fit: BoxFit.cover,
-                        width: double.infinity,
+                      child: Hero(
+                        tag:
+                            'hero-tag-${product['productId']}', // Unique tag for Hero widget
+                        child: Image.network(
+                          product['imageURL'],
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                        ),
                       ),
                     ),
                   ),
@@ -90,10 +95,10 @@ class AllProductsGrid extends StatelessWidget {
                   style: const TextStyle(fontWeight: FontWeight.w400),
                 ),
                 const SizedBox(height: 8.0),
-                if (product['quantity'] == 0)
-                  Text(
+                if (product['quantity'] <= 0)
+                  const Text(
                     'Out of stock',
-                    style: const TextStyle(color: Colors.red),
+                    style: TextStyle(color: Colors.red),
                   ),
               ],
             ),
