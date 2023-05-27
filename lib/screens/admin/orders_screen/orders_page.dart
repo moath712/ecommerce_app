@@ -32,62 +32,73 @@ class OrdersPage extends ConsumerWidget {
     final orders = ref.watch(ordersProvider);
 
     return Scaffold(
-      body: Column(
-        children: [
-          const SizedBox(
-            height: 50,
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: orders.length,
-              itemBuilder: (context, index) {
-                final order = orders[index];
-                final userData = order['userData'];
-                final cartItems = order['cartItems'] as List<dynamic>;
+      backgroundColor: const Color.fromARGB(255, 232, 236, 237),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 20),
+        child: Center(
+          child: Container(
+            color: Colors.white,
+            width: MediaQuery.of(context).size.width / 2,
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 50,
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: orders.length,
+                    itemBuilder: (context, index) {
+                      final order = orders[index];
+                      final userData = order['userData'];
+                      final cartItems = order['cartItems'] as List<dynamic>;
 
-                // Calculate total price
-                final totalPrice = cartItems.fold(
-                  0.0,
-                  (double previousValue, item) =>
-                      previousValue +
-                      ((item['price'] ?? 0) * (item['userQuantity'] ?? 1)),
-                );
-
-                return ExpansionTile(
-                  title: Text('Customer Name: ${userData['firstName']}'),
-                  subtitle: Text(
-                      'Placed at ${DateFormat.yMd().add_jm().format(order['timestamp'].toDate())}, Total: \$${totalPrice.toStringAsFixed(2)}'),
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(userData['imageUrl']),
-                    radius: 30,
-                  ),
-                  children: [
-                    Text('Phone Number: ${userData['Phone Number']}'),
-                    ...cartItems.map((item) {
-                      return ListTile(
-                        leading: Image.network(item['imageURL']),
-                        title: Text(item['title']),
-                        trailing: Text('Quantity: ${item['userQuantity']}'),
+                      // Calculate total price
+                      final totalPrice = cartItems.fold(
+                        0.0,
+                        (double previousValue, item) =>
+                            previousValue +
+                            ((item['price'] ?? 0) *
+                                (item['userQuantity'] ?? 1)),
                       );
-                    }).toList(),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                OrderDetailsPage(order: order),
+
+                      return ExpansionTile(
+                        title: Text('Customer Name: ${userData['firstName']}'),
+                        subtitle: Text(
+                            'Placed at ${DateFormat.yMd().add_jm().format(order['timestamp'].toDate())}, Total: \$${totalPrice.toStringAsFixed(2)}'),
+                        leading: CircleAvatar(
+                          backgroundImage: NetworkImage(userData['imageUrl']),
+                          radius: 30,
+                        ),
+                        children: [
+                          ...cartItems.map((item) {
+                            return ListTile(
+                              leading: Image.network(item['imageURL']),
+                              title: Text(item['title']),
+                              trailing:
+                                  Text('Quantity: ${item['userQuantity']}'),
+                            );
+                          }).toList(),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      OrderDetailsPage(order: order),
+                                ),
+                              );
+                            },
+                            child: const Text('View Details'),
                           ),
-                        );
-                      },
-                      child: const Text('View Details'),
-                    ),
-                  ],
-                );
-              },
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }

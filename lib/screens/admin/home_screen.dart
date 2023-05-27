@@ -1,6 +1,7 @@
-import 'package:ecommerce_app/screens/admin/add_category.dart';
-import 'package:ecommerce_app/screens/admin/add_new_product.dart';
-import 'package:ecommerce_app/screens/admin/admin_home_screen.dart';
+import 'package:ecommerce_app/screens/admin/add_category/add_category.dart';
+import 'package:ecommerce_app/screens/admin/add_product/add_new_product.dart';
+import 'package:ecommerce_app/screens/admin/admin_home_screen/admin_home_screen.dart';
+import 'package:ecommerce_app/screens/admin/home_dashboard/widgets/home_dashboard.dart';
 import 'package:ecommerce_app/screens/admin/orders_screen/orders_page.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:flutter/material.dart';
@@ -16,19 +17,20 @@ class _AdminPageState extends State<AdminPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedIndex = 0;
   final _pageOptions = [
+    const DashboardScreen(),
     const ProductsAdmin(),
     const AddProductWidget(),
-    const OrdersPage(),
     const AddCategoryWidget(),
-    const Text("data")
+    const OrdersPage(),
   ];
   final drawerWidth = 300.0;
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        if (constraints.maxWidth > 720) {
+        if (constraints.maxWidth > 820) {
           return Scaffold(
+            backgroundColor: const Color.fromARGB(255, 232, 236, 237),
             appBar: AppBar(
                 backgroundColor: Colors.white,
                 elevation: 0,
@@ -71,8 +73,8 @@ class _AdminPageState extends State<AdminPage> {
               ],
             ),
             key: _scaffoldKey,
-            drawer: constraints.maxWidth < 720 ? _buildDrawer(context) : null,
-            floatingActionButton: constraints.maxWidth < 720
+            drawer: constraints.maxWidth < 820 ? _buildDrawer(context) : null,
+            floatingActionButton: constraints.maxWidth < 820
                 ? FloatingActionButton(
                     onPressed: () => _scaffoldKey.currentState!.openDrawer(),
                     child: const Icon(Icons.menu),
@@ -113,16 +115,16 @@ class _AdminPageState extends State<AdminPage> {
               icon: Icons.dashboard,
               text: 'Products',
               onTap: () {
-                _updatePage(0);
+                _updatePage(1);
               },
-              isSelected: _selectedIndex == 0),
+              isSelected: _selectedIndex == 1),
           _createDrawerItem(
               icon: Icons.add,
               text: 'Add Product',
               onTap: () {
-                _updatePage(1);
+                _updatePage(2);
               },
-              isSelected: _selectedIndex == 1),
+              isSelected: _selectedIndex == 2),
           _createDrawerItem(
               icon: Icons.category,
               text: 'Add Category',
@@ -134,10 +136,10 @@ class _AdminPageState extends State<AdminPage> {
               icon: Icons.shopping_cart,
               text: 'Orders',
               onTap: () {
-                _updatePage(2);
+                _updatePage(4);
               },
-              isSelected: _selectedIndex == 2),
-          MediaQuery.of(context).size.width < 720
+              isSelected: _selectedIndex == 4),
+          MediaQuery.of(context).size.width < 820
               ? _createDrawerItem(
                   icon: Icons.arrow_back_ios,
                   text: 'back',
@@ -173,7 +175,7 @@ class _AdminPageState extends State<AdminPage> {
   }
 
   void _updatePage(int index) {
-    if (MediaQuery.of(context).size.width <= 720) {
+    if (MediaQuery.of(context).size.width <= 600) {
       Navigator.of(context).pop();
     }
     setState(() {

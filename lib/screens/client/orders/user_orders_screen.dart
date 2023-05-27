@@ -1,4 +1,4 @@
-import 'package:ecommerce_app/screens/client/cart_icon.dart';
+import 'package:ecommerce_app/widgets/cart_icon.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

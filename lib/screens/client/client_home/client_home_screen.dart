@@ -1,5 +1,5 @@
-import 'package:ecommerce_app/screens/client/all_products.dart';
-import 'package:ecommerce_app/screens/client/cart_icon.dart';
+import 'package:ecommerce_app/screens/client/all_products/all_products.dart';
+import 'package:ecommerce_app/widgets/cart_icon.dart';
 import 'package:ecommerce_app/screens/client/client_home/widgets/categories_bar.dart';
 import 'package:ecommerce_app/screens/client/client_home/widgets/drawer/logout_drawer.dart';
 import 'package:ecommerce_app/screens/client/client_home/widgets/drawer/orders_drawer.dart';
@@ -72,7 +72,7 @@ class _ClientHomeState extends State<ClientHome> {
                           child: DrawerData(userData: userData),
                         ),
                         const ProfileDrawer(),
-                        const Orders_Drawer(),
+                        const OrdersDrawer(),
                         const LogoutDrawer(),
                       ],
                     );
@@ -119,7 +119,7 @@ class _ClientHomeState extends State<ClientHome> {
                     color: Color(0xff171717)),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             const AllProductsGrid()

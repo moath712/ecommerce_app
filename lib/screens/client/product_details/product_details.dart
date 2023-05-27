@@ -1,5 +1,4 @@
-
-import 'package:ecommerce_app/screens/client/cart_icon.dart';
+import 'package:ecommerce_app/widgets/cart_icon.dart';
 import 'package:ecommerce_app/screens/client/orders/user_orders_screen.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -45,13 +44,14 @@ class CartState extends StateNotifier<List<Map<String, dynamic>>> {
         DocumentReference docRef = await cartRef.add(productWithUserQuantity);
         productWithUserQuantity['id'] = docRef.id;
       }
-
-      ScaffoldMessenger.of(context).showSnackBar(
+if (context.mounted) {
+  ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Product added to cart'),
           backgroundColor: Colors.green,
         ),
       );
+}
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -277,7 +277,7 @@ class ProductDetails extends ConsumerWidget {
                                               'Red': '#FF0000',
                                               'Blue': '#0000FF',
                                               'Green': '#008000',
-                                              'Yellow': '#FFFF00',
+                                             
                                               'Black': '#000000',
                                               'White': '#FFFFFF',
                                             };

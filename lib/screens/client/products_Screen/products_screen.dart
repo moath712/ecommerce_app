@@ -1,4 +1,4 @@
-import 'package:ecommerce_app/screens/client/cart_icon.dart';
+import 'package:ecommerce_app/widgets/cart_icon.dart';
 import 'package:ecommerce_app/screens/client/product_details/product_details.dart';
 
 import 'package:ecommerce_app/style/assets_manager.dart';
@@ -139,6 +139,11 @@ class _CategoryProductsState extends State<CategoryProducts> {
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w400),
                                       ),
+                                      if (product['quantity'] <= 0)
+                                        const Text(
+                                          'Out of stock',
+                                          style: TextStyle(color: Colors.red),
+                                        ),
                                     ],
                                   ),
                                 ),

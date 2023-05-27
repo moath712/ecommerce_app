@@ -1,4 +1,5 @@
 import 'package:ecommerce_app/screens/client/client_home/client_home_screen.dart';
+import 'package:ecommerce_app/screens/client/sign_up_screen/sign_up_page.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,12 +21,12 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          child: Form(
-            key: _formKey,
+        child: Form(
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -58,6 +59,22 @@ class _LoginPageState extends State<LoginPage> {
                 buildPasswordField(),
                 const SizedBox(height: 20),
                 buildLoginButton(),
+                const SizedBox(height: 20),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SignUpScreen()),
+                    );
+                  },
+                  child: const Text.rich(
+                    TextSpan(
+                      text: 'Create account',
+                      style: TextStyle(decoration: TextDecoration.underline),
+                    ),
+                  ),
+                )
               ],
             ),
           ),
@@ -170,16 +187,20 @@ class _LoginPageState extends State<LoginPage> {
         email: _email,
         password: _password,
       );
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Login succeeded'),
-          backgroundColor: Colors.green,
-        ),
-      );
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const ClientHome()),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Login succeeded'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+      if (context.mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ClientHome()),
+        );
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         ScaffoldMessenger.of(context).showSnackBar(

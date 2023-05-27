@@ -32,68 +32,88 @@ class CategoriesBar extends StatelessWidget {
               var doc = snapshot.data!.docs[index];
               String title = doc['name'];
               String image = doc['imageUrl'];
-              int numOfProducts = doc['productCount'];
 
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            CategoryProducts(categoryName: title),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    width: 190,
-                    height: 250,
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          bottom: 0,
-                          child: Image.asset(
-                            "assets/images/categorybox.png",
-                            width: 190,
+              return FutureBuilder<QuerySnapshot>(
+                // Fetch the 'products' subcollection
+                future: firestore
+                    .collection('categories')
+                    .doc(doc['name'])
+                    .collection('products')
+                    .get(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> productSnapshot) {
+                  if (productSnapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  }
+
+                  // Get the number of products
+                  int numOfProducts = productSnapshot.data!.docs.length;
+
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                CategoryProducts(categoryName: title),
                           ),
-                        ),
-                        Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: Image.network(
-                                  image,
-                                  width: 220,
-                                  height: 220,
-                                ),
+                        );
+                      },
+                      child: SizedBox(
+                        width: 190,
+                        height: 250,
+                        child: Stack(
+                          children: [
+                            Positioned(
+                              bottom: 0,
+                              child: Image.asset(
+                                "assets/images/categorybox.png",
+                                width: 190,
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 20),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(title,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    Text(
-                                      ' $numOfProducts+ Products',
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.w400),
+                            ),
+                            Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: Image.network(
+                                      image,
+                                      width: 220,
+                                      height: 220,
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 20),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(title,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold)),
+                                        Text(
+                                          ' $numOfProducts+ Products',
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
               );
             },
           );

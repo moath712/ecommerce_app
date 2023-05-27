@@ -1,4 +1,8 @@
+
 import 'package:ecommerce_app/style/assets_manager.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -18,14 +22,27 @@ class EditProductScreen extends StatefulWidget {
 }
 
 class _EditProductScreenState extends State<EditProductScreen> {
+  Uint8List? _imageData;
+  Future<void> _pickImage() async {
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.image);
+
+    if (result != null) {
+      Uint8List fileBytes = result.files.first.bytes!;
+
+      setState(() {
+        _imageData = fileBytes;
+      });
+    }
+  }
+
   late final TextEditingController _titleController =
       TextEditingController(text: widget.product['title']);
   late final TextEditingController _priceController =
       TextEditingController(text: widget.product['price'].toString());
   late final TextEditingController _quantityController =
       TextEditingController(text: widget.product['quantity'].toString());
-  late final TextEditingController _imageController =
-      TextEditingController(text: widget.product['imageURL']);
+
   late final TextEditingController _subTitleController =
       TextEditingController(text: widget.product['subTitle']);
   late final TextEditingController _descriptionController =
@@ -49,13 +66,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
           .collection('products')
           .doc(productId)
           .delete();
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to delete product: $e'),
-        ),
-      );
-    }
+    } catch (e) {if (kDebugMode) {
+      print("object");
+    }}
   }
 
   @override
@@ -90,14 +103,65 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           TextStyle(fontSize: 25, fontWeight: FontWeight.w300),
                     ),
                   ),
+                  if (_imageData != null)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(width: 2, color: Colors.grey),
+                        ),
+                        child: Center(
+                          child: SizedBox(
+                              width: 200,
+                              height: 200,
+                              child: Image.memory(_imageData!)),
+                        ),
+                      ),
+                    ),
+                  if (_imageData == null)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(width: 2, color: Colors.grey),
+                        ),
+                        child: Center(
+                          child: SizedBox(
+                              width: 200,
+                              height: 200,
+                              child: Image.network(widget.product['imageURL'])),
+                        ),
+                      ),
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.blueGrey.shade900,
+                          backgroundColor: const Color(0xFFA95EFA),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 16, horizontal: 32),
+                        ),
+                        onPressed: _pickImage,
+                        child: const Text(
+                          'Change Image',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 232, 236, 237),
-                        borderRadius: BorderRadius.circular(25),
-                        border: Border.all(
-                            width: 2, color: Colors.deepPurpleAccent),
+                        color: Colors.white,
+                        border: Border.all(width: 2, color: Colors.grey),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
@@ -116,10 +180,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 232, 236, 237),
-                        borderRadius: BorderRadius.circular(25),
-                        border: Border.all(
-                            width: 2, color: Colors.deepPurpleAccent),
+                        color: Colors.white,
+                        border: Border.all(width: 2, color: Colors.grey),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
@@ -139,10 +201,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 232, 236, 237),
-                        borderRadius: BorderRadius.circular(25),
-                        border: Border.all(
-                            width: 2, color: Colors.deepPurpleAccent),
+                        color: Colors.white,
+                        border: Border.all(width: 2, color: Colors.grey),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
@@ -162,32 +222,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 232, 236, 237),
-                        borderRadius: BorderRadius.circular(25),
-                        border: Border.all(
-                            width: 2, color: Colors.deepPurpleAccent),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        child: TextField(
-                          controller: _imageController,
-                          decoration: const InputDecoration(
-                            labelText: 'Image URL',
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 232, 236, 237),
-                        borderRadius: BorderRadius.circular(25),
-                        border: Border.all(
-                            width: 2, color: Colors.deepPurpleAccent),
+                        color: Colors.white,
+                        border: Border.all(width: 2, color: Colors.grey),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
@@ -206,10 +242,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 232, 236, 237),
-                        borderRadius: BorderRadius.circular(25),
-                        border: Border.all(
-                            width: 2, color: Colors.deepPurpleAccent),
+                        color: Colors.white,
+                        border: Border.all(width: 2, color: Colors.grey),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
@@ -240,12 +274,20 @@ class _EditProductScreenState extends State<EditProductScreen> {
                               vertical: 16, horizontal: 32),
                         ),
                         onPressed: () async {
+                          final ref = FirebaseStorage.instance
+                              .ref()
+                              .child('categories')
+                              .child('${DateTime.now().toIso8601String()}.png');
+
+                          await ref.putData(_imageData!);
+
+                          final url = await ref.getDownloadURL();
                           final updatedProduct = {
                             'title': _titleController.text,
                             'price': int.parse(_priceController.text),
                             'quantity': int.parse(_quantityController.text),
                             'category': widget.category,
-                            'imageURL': _imageController.text,
+                            'imageURL': url,
                             'subTitle': _subTitleController.text,
                             'description': _descriptionController.text,
                           };

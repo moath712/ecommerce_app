@@ -1,11 +1,12 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ecommerce_app/screens/client/cart_icon.dart';
+import 'package:ecommerce_app/widgets/cart_icon.dart';
 import 'package:ecommerce_app/screens/client/edit_profile_screen.dart/widgets/name_edit.dart';
 import 'package:ecommerce_app/screens/client/edit_profile_screen.dart/widgets/number_edit.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -163,7 +164,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
       } else {
-        print('No image selected.');
+        if (kDebugMode) {
+          print('No image selected.');
+        }
       }
     });
 
@@ -190,9 +193,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
       docRef.update({'imageUrl': url});
 
-      print('URL Is: $url');
+      if (kDebugMode) {
+        print('URL Is: $url');
+      }
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 

@@ -1,8 +1,8 @@
 import 'package:ecommerce_app/screens/client/orders/user_orders_screen.dart';
 import 'package:flutter/material.dart';
 
-class Orders_Drawer extends StatelessWidget {
-  const Orders_Drawer({
+class OrdersDrawer extends StatelessWidget {
+  const OrdersDrawer({
     super.key,
   });
 

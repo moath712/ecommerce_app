@@ -1,4 +1,4 @@
-import 'package:ecommerce_app/screens/client/welcome_screen/welcome_screen.dart';
+import 'package:ecommerce_app/screens/client/client_login_checker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
@@ -16,7 +16,7 @@ class MyHomePage extends StatelessWidget {
       title: 'My App',
       home: Scaffold(
         body: Center(
-          child: kIsWeb ? AdminPage() : WelcomeScreen(),
+          child: kIsWeb ? AdminPage() : CheckAuthentication(),
         ),
       ),
     );

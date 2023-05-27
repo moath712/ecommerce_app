@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 class OrderDetailsPage extends StatelessWidget {
   final Map<String, dynamic> order;
@@ -25,10 +28,20 @@ class OrderDetailsPage extends StatelessWidget {
           child: Container(
             decoration: const BoxDecoration(),
             child: Scaffold(
+              backgroundColor: const Color.fromARGB(255, 232, 236, 237),
               body: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: IconButton(
+                        icon: Image.asset(ImageAssets.back),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
                     const SizedBox(
                       height: 50,
                     ),
@@ -76,18 +89,27 @@ class OrderDetailsPage extends StatelessWidget {
                                           vertical: 15, horizontal: 20),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(25),
-                                        child: Container(
+                                        child: Material(
                                           color: Colors.grey,
-                                          child: const Padding(
-                                            padding: EdgeInsets.all(8.0),
-                                            child: Icon(
-                                              Icons.print,
-                                              color: Colors.white,
+                                          child: InkWell(
+                                            onTap: () async {
+                                              final doc =
+                                                  await _generateDocument();
+                                              await Printing.sharePdf(
+                                                  bytes: await doc.save(),
+                                                  filename: 'document.pdf');
+                                            },
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(8.0),
+                                              child: Icon(
+                                                Icons.print,
+                                                color: Colors.white,
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
                                 Padding(
@@ -150,6 +172,13 @@ class OrderDetailsPage extends StatelessWidget {
                                                     child: Text(
                                                         '${userData['Phone Number']}'),
                                                   ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            2.0),
+                                                    child: Text(
+                                                        'Address :${userData['address']}'),
+                                                  ),
                                                 ],
                                               ),
                                             ),
@@ -170,7 +199,7 @@ class OrderDetailsPage extends StatelessWidget {
                                     ),
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 5),
+                                          horizontal: 8, vertical: 10),
                                       child: Row(
                                         children: [
                                           SizedBox(
@@ -327,4 +356,16 @@ class OrderDetailsPage extends StatelessWidget {
       );
     });
   }
+}
+
+Future<pw.Document> _generateDocument() async {
+  final doc = pw.Document();
+  // This is a placeholder. Replace the Text widget with the widget you'd like to print.
+  final pdfWidget = pw.Text('Hello world!');
+
+  doc.addPage(pw.Page(
+    build: (pw.Context context) => pdfWidget,
+  ));
+
+  return doc;
 }

@@ -1,5 +1,6 @@
 import 'package:ecommerce_app/screens/client/sign_in/sign_in_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class LogoutDrawer extends StatelessWidget {
@@ -24,7 +25,9 @@ class LogoutDrawer extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const LoginPage()),
           );
         } catch (e) {
-          print(e);
+          if (kDebugMode) {
+            print(e);
+          }
         }
       },
     );

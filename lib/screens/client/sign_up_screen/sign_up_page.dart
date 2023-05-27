@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/screens/client/client_home/client_home_screen.dart';
+import 'package:ecommerce_app/screens/client/sign_up_screen/widgets/address_field.dart';
 import 'package:ecommerce_app/screens/client/sign_up_screen/widgets/email_field.dart';
 import 'package:ecommerce_app/screens/client/sign_up_screen/widgets/name_field.dart';
 import 'package:ecommerce_app/screens/client/sign_up_screen/widgets/number_field.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -28,11 +30,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
       } else {
-        print('No image selected.');
+        if (kDebugMode) {
+          print('No image selected.');
+        }
       }
     });
   }
 
+  final _addressController = TextEditingController();
   final _emailController = TextEditingController();
   final _firstNameController = TextEditingController();
   final _phonenumbercontroller = TextEditingController();
@@ -42,14 +47,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Future<void> _signUp() async {
     try {
       final auth = FirebaseAuth.instance;
-
       final firestore = FirebaseFirestore.instance;
       final email = _emailController.text;
       final password = _passwordController.text;
-
+      final address = _addressController.text;
       final firstName = _firstNameController.text;
       final phoneNumber = _phonenumbercontroller.text;
-
       final result = await auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
@@ -68,6 +71,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         await firestore.collection('users').doc(result.user!.uid).set({
           'firstName': firstName,
           'uid': result.user!.uid,
+          'address': address,
           'Phone Number': phoneNumber,
           'imageUrl': url,
         });
@@ -92,19 +96,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(height: MediaQuery.of(context).size.height * 0.1),
-            TypewriterAnimatedTextKit(
-              text: const ['StyleMySpace'],
-              textStyle: const TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+            AnimatedTextKit(
+              animatedTexts: [
+                TypewriterAnimatedText(
+                  'StyleMySpace',
+                  textStyle: const TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(
               height: 15,
@@ -154,7 +162,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
                 controller: _passwordController,
-                obscureText: true,
+                obscureText: _isHidden,
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Please enter your password';
@@ -192,6 +200,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
             NameWidget(firstNameController: _firstNameController),
             NumberWidget(phonenumbercontroller: _phonenumbercontroller),
+            AddressField(
+              addressController: _addressController,
+            ),
             const SizedBox(height: 16),
             ElevatedButton(
               style: ElevatedButton.styleFrom(

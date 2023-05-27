@@ -13,13 +13,15 @@ class WelcomeScreen extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: Colors.white,
-        body: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Column(
+        body: SingleChildScrollView(
+          child: Center(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(
+                  height: 120,
+                ),
                 SizedBox(
                   width: 250,
                   height: 250,
@@ -42,7 +44,7 @@ class WelcomeScreen extends StatelessWidget {
                 const ForgotPassword(),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -3,6 +3,7 @@ import 'package:ecommerce_app/screens/client/orders/user_orders_screen.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:ecommerce_app/style/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -53,7 +54,9 @@ class CartState extends StateNotifier<List<Map<String, dynamic>>> {
               .doc(item['productId'])
               .update({'quantity': originalQuantity - userQuantity});
         } else {
-          print('Item does not exist');
+          if (kDebugMode) {
+            print('Item does not exist');
+          }
         }
       }
       // Clear current cart
@@ -72,12 +75,14 @@ class CartState extends StateNotifier<List<Map<String, dynamic>>> {
       loadCartItems();
 
       // If everything goes well, show a success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Order confirmed'),
-          backgroundColor: Colors.green,
-        ),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Order confirmed'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
     } catch (e) {
       // If something goes wrong, show an error message
       ScaffoldMessenger.of(context).showSnackBar(
@@ -213,8 +218,8 @@ class CartPage extends ConsumerWidget {
                   margin:
                       const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 232, 236, 237),
-                    boxShadow: [],
+                    color: const Color.fromARGB(255, 232, 236, 237),
+                    boxShadow: const [],
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
@@ -256,7 +261,7 @@ class CartPage extends ConsumerWidget {
                               const SizedBox(width: 8),
                               if (cart[index]['selectedColor'] != null)
                                 Text(
-                                    '${cart[index]['selectedColor']['color']}'), // assuming the color has a 'name' property
+                                    '${cart[index]['selectedColor']['color']}'),
                             ],
                           ),
                         ],
@@ -277,8 +282,7 @@ class CartPage extends ConsumerWidget {
                                       TextButton(
                                         child: const Text('CANCEL'),
                                         onPressed: () {
-                                          Navigator.of(context)
-                                              .pop(); // Dismiss the dialog
+                                          Navigator.of(context).pop();
                                         },
                                       ),
                                       TextButton(
@@ -312,8 +316,10 @@ class CartPage extends ConsumerWidget {
                               ),
                               IconButton(
                                 icon: Image.asset(ImageAssets.minus),
-                                onPressed: () => cartNotifier
-                                    .decreaseUserQuantity(cart[index]['id']),
+                                onPressed: cart[index]['userQuantity'] > 1
+                                    ? () => cartNotifier
+                                        .decreaseUserQuantity(cart[index]['id'])
+                                    : null,
                               ),
                             ],
                           ),

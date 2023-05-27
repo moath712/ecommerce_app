@@ -1,4 +1,5 @@
-import 'package:ecommerce_app/screens/client/cart_icon.dart';
+import 'package:ecommerce_app/widgets/cart_icon.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -232,7 +233,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
       } else {
-        print('No image selected.');
+        if (kDebugMode) {
+          print('No image selected.');
+        }
       }
     });
 
@@ -259,9 +262,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
       docRef.update({'photoUrl': url});
 
-      print('URL Is: $url');
+      if (kDebugMode) {
+        print('URL Is: $url');
+      }
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 }
