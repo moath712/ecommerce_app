@@ -27,6 +27,7 @@ class _AddProductWidgetState extends State<AddProductWidget> {
   final _descriptionController = TextEditingController();
 
   final Map<String, String> _colorHexValues = {
+    // TODO: Dont use hardcoded values
     'Red': '#FF0000',
     'Blue': '#0000FF',
     'Green': '#008000',
@@ -36,7 +37,9 @@ class _AddProductWidgetState extends State<AddProductWidget> {
   final List<Map<String, String>> _selectedColorsWithHex = [];
 
   Uint8List? _imageData;
+
   Future<void> _pickImage() async {
+    // TODO: Redundant code
     FilePickerResult? result =
         await FilePicker.platform.pickFiles(type: FileType.image);
 
@@ -50,6 +53,7 @@ class _AddProductWidgetState extends State<AddProductWidget> {
   }
 
   List<Widget> _buildColorCheckboxes() {
+    // TODO: Dont use methodes to build widgets
     return _colorHexValues.entries.map((entry) {
       return CheckboxListTile(
         title: Row(
@@ -341,11 +345,4 @@ class _AddProductWidgetState extends State<AddProductWidget> {
     );
   }
 }
-
-
-
-
-
-
-
-
+// TODO: too much code in this file

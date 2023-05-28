@@ -83,6 +83,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                   child: Row(
                                     children: [
                                       IconButton(
+                                        // TODO: Why is the icon button here?
                                         icon: const Icon(
                                           Icons.person,
                                           color: Colors.black,

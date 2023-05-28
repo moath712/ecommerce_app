@@ -43,14 +43,14 @@ class _AddCategoryWidgetState extends State<AddCategoryWidget> {
       _categoryController.clear();
       _imageData = null;
       _productCountController.clear();
-if (context.mounted) {
-  ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Category added successfully'),
-          backgroundColor: Colors.green,
-        ),
-      );
-}
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Category added successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
     }
   }
 
@@ -114,7 +114,8 @@ if (context.mounted) {
                                     Border.all(width: 2, color: Colors.grey),
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
                                 child: Center(
                                   child: SizedBox(
                                     width: 200,

@@ -23,6 +23,7 @@ class NumberWidget extends StatelessWidget {
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
           labelText: 'Phone Number',
+          // TODO: Too much redundant code
           labelStyle: const TextStyle(color: Colors.black),
           enabledBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.red),

@@ -55,6 +55,7 @@ class _ClientHomeState extends State<ClientHome> {
               return StreamBuilder<DocumentSnapshot>(
                 stream: firestore
                     .collection('users')
+                    // TODO use ? instead of !
                     .doc(snapshot.data!.uid)
                     .snapshots(),
                 builder: (BuildContext context,

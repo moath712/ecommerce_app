@@ -180,6 +180,8 @@ final cartProvider =
     StateNotifierProvider<CartState, List<Map<String, dynamic>>>(
         (ref) => CartState(ref.read(authProvider).currentUser!.uid));
 
+
+// TODO: Too many functions in this widget, refactor it, separate The UI from the logic
 class CartPage extends ConsumerWidget {
   const CartPage({super.key});
 

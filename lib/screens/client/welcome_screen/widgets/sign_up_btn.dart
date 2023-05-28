@@ -21,6 +21,7 @@ class SignUpButton extends StatelessWidget {
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
+              // TODO: Why you use same color twice?
               Color(0xFFA95EFA),
               Color(0xFFA95EFA),
             ],

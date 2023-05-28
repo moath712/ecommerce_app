@@ -1,4 +1,3 @@
-
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -24,6 +23,7 @@ class EditProductScreen extends StatefulWidget {
 class _EditProductScreenState extends State<EditProductScreen> {
   Uint8List? _imageData;
   Future<void> _pickImage() async {
+    // TODO: redundant code
     FilePickerResult? result =
         await FilePicker.platform.pickFiles(type: FileType.image);
 
@@ -36,6 +36,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
   }
 
+// TODO: use model class amd why are you using late here
   late final TextEditingController _titleController =
       TextEditingController(text: widget.product['title']);
   late final TextEditingController _priceController =
@@ -66,9 +67,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
           .collection('products')
           .doc(productId)
           .delete();
-    } catch (e) {if (kDebugMode) {
-      print("object");
-    }}
+    } catch (e) {
+      if (kDebugMode) {
+        print("object");
+      }
+    }
   }
 
   @override

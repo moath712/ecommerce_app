@@ -16,7 +16,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: SingleChildScrollView(
+        child: 
+        // TODO: use stream provider instead
+        SingleChildScrollView(
           child: FutureBuilder<DataModel>(
             future: _fetchData(),
             builder: (context, snapshot) {

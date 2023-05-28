@@ -11,6 +11,7 @@ class DescriptionField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
+      // TODO: Redundant code
       padding: const EdgeInsets.symmetric(
           horizontal: 16, vertical: 8),
       child: Container(

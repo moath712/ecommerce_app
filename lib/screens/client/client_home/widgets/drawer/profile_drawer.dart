@@ -8,6 +8,7 @@ class ProfileDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: redundant code
     return ListTile(
       leading: const Icon(Icons.person),
       title: const Text(

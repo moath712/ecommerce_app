@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class NameField extends StatelessWidget {
+  // TODO: name the calss like the file name
   const NameField({
     super.key,
     required TextEditingController firstNameController,

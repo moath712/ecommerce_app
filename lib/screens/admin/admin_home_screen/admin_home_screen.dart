@@ -52,6 +52,7 @@ class _ProductsAdminState extends State<ProductsAdmin> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
+                                // TODO: use stream provider instead
                                 child: StreamBuilder<QuerySnapshot>(
                                   stream: FirebaseFirestore.instance
                                       .collection('categories')

@@ -41,6 +41,7 @@ class Itemwidget extends StatelessWidget {
               height: 140,
               width: 180,
               child: Image.network(
+                // TODO: use model class
                 product['imageURL'],
                 fit: BoxFit.cover,
               ),

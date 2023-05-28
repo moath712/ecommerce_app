@@ -85,7 +85,7 @@ class _AdminPageState extends State<AdminPage> {
       },
     );
   }
-
+// TODO: Dont use methods to build widgets, use classes instead 
   Widget _buildDrawer(BuildContext context) {
     return Container(
       color: Colors.white,

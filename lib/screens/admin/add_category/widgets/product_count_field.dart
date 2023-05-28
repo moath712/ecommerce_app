@@ -4,6 +4,7 @@ class ProductCountField extends StatelessWidget {
   const ProductCountField({
     super.key,
     required TextEditingController productCountController,
+    // TODO: private variable 
   }) : _productCountController = productCountController;
 
   final TextEditingController _productCountController;

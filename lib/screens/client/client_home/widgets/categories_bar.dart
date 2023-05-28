@@ -70,6 +70,7 @@ class CategoriesBar extends StatelessWidget {
                             Positioned(
                               bottom: 0,
                               child: Image.asset(
+                                // TODO: Don't hardcode the image path
                                 "assets/images/categorybox.png",
                                 width: 190,
                               ),
