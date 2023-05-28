@@ -278,29 +278,42 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                   vertical: 16, horizontal: 32),
                             ),
                             onPressed: () async {
-                              final ref = FirebaseStorage.instance
-                                  .ref()
-                                  .child('categories')
-                                  .child(
-                                      '${DateTime.now().toIso8601String()}.png');
+                              if (_imageData == null) {
+                                final url = widget.product['imageURL'];
+                                final updatedProduct = {
+                                  'title': _titleController.text,
+                                  'price': int.parse(_priceController.text),
+                                  'quantity':
+                                      int.parse(_quantityController.text),
+                                  'category': widget.category,
+                                  'imageURL': url,
+                                  'subTitle': _subTitleController.text,
+                                  'description': _descriptionController.text,
+                                };
+                                await _updateProduct(widget.category,
+                                    widget.productId, updatedProduct);
+                              } else {
+                                final ref = FirebaseStorage.instance
+                                    .ref()
+                                    .child('categories')
+                                    .child(
+                                        '${DateTime.now().toIso8601String()}.png');
+                                await ref.putData(_imageData!);
+                                final url = await ref.getDownloadURL();
+                                final updatedProduct = {
+                                  'title': _titleController.text,
+                                  'price': int.parse(_priceController.text),
+                                  'quantity':
+                                      int.parse(_quantityController.text),
+                                  'category': widget.category,
+                                  'imageURL': url,
+                                  'subTitle': _subTitleController.text,
+                                  'description': _descriptionController.text,
+                                };
 
-                              await ref.putData(_imageData!);
-
-                              final url = await ref.getDownloadURL();
-                              final updatedProduct = {
-                                'title': _titleController.text,
-                                'price': int.parse(_priceController.text),
-                                'quantity': int.parse(_quantityController.text),
-                                'category': widget.category,
-                                'imageURL': url,
-                                'subTitle': _subTitleController.text,
-                                'description': _descriptionController.text,
-                              };
-
-                              await _updateProduct(widget.category,
-                                  widget.productId, updatedProduct);
-                              if (context.mounted) {}
-                              Navigator.pop(context);
+                                await _updateProduct(widget.category,
+                                    widget.productId, updatedProduct);
+                              }
                             },
                             child: const Text(
                               'Update Product',
