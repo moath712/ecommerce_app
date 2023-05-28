@@ -118,7 +118,6 @@ class _PasswordResetWidgetState extends State<PasswordResetWidget> {
                 height: 50,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.blueGrey.shade900,
                     backgroundColor: const Color(0xFFA95EFA),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
@@ -126,11 +125,9 @@ class _PasswordResetWidgetState extends State<PasswordResetWidget> {
                     padding: const EdgeInsets.symmetric(
                         vertical: 16, horizontal: 32),
                   ),
-                  onPressed: _isLoading
-                      ? null
-                      : _submit, 
+                  onPressed: _isLoading ? null : _submit,
                   child: _isLoading
-                      ? const CircularProgressIndicator() 
+                      ? const CircularProgressIndicator()
                       : const Text(
                           'Reset Password',
                           style: TextStyle(color: Colors.white),

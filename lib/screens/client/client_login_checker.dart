@@ -18,12 +18,12 @@ class _CheckAuthenticationState extends State<CheckAuthentication> {
     super.initState();
     _auth.authStateChanges().listen((User? user) {
       if (user == null) {
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const WelcomeScreen()),
         );
       } else {
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const ClientHome()),
         );
