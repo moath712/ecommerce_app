@@ -36,6 +36,7 @@ class _CheckAuthenticationState extends State<CheckAuthentication> {
     return WillPopScope(
       onWillPop: () async => false,
       child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: Scaffold(
           body: Center(child: CircularProgressIndicator()),
         ),

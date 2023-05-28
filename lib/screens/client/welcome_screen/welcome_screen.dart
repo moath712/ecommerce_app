@@ -10,7 +10,7 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => false, // Prevent user from navigating back
+      onWillPop: () async => false, 
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
