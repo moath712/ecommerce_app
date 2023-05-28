@@ -26,12 +26,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
   File? _image;
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
-
+  late Future<DocumentSnapshot> userDocFuture;
   @override
   void initState() {
     super.initState();
     _firstNameController.text = widget.userData['firstName'];
     _phoneNumberController.text = widget.userData['Phone Number'];
+    userDocFuture =
+        _firestore.collection('users').doc(_auth.currentUser!.uid).get();
   }
 
   @override
@@ -48,10 +50,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
         ),
         actions: [ItemsNumber(userId: FirebaseAuth.instance.currentUser!.uid)],
       ),
-      resizeToAvoidBottomInset: false,
       body: FutureBuilder<DocumentSnapshot>(
-        future:
-            _firestore.collection('users').doc(_auth.currentUser!.uid).get(),
+        future: userDocFuture,
         builder:
             (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.hasError) {

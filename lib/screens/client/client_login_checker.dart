@@ -2,6 +2,7 @@ import 'package:ecommerce_app/screens/client/client_home/client_home_screen.dart
 import 'package:ecommerce_app/screens/client/welcome_screen/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CheckAuthentication extends StatefulWidget {
   const CheckAuthentication({super.key});
@@ -35,9 +36,13 @@ class _CheckAuthenticationState extends State<CheckAuthentication> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
-      child: const MaterialApp(
+      child: MaterialApp(
+        theme: ThemeData(
+          textTheme: GoogleFonts.aBeeZeeTextTheme(),
+          primarySwatch: Colors.blue,
+        ),
         debugShowCheckedModeBanner: false,
-        home: Scaffold(
+        home: const Scaffold(
           body: Center(child: CircularProgressIndicator()),
         ),
       ),
