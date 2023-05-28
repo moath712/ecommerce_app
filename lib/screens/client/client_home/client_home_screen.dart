@@ -55,7 +55,7 @@ class _ClientHomeState extends State<ClientHome> {
               return StreamBuilder<DocumentSnapshot>(
                 stream: firestore
                     .collection('users')
-                    .doc(snapshot.data!.uid)
+                    .doc(snapshot.data?.uid)
                     .snapshots(),
                 builder: (BuildContext context,
                     AsyncSnapshot<DocumentSnapshot> snapshot) {
@@ -82,11 +82,7 @@ class _ClientHomeState extends State<ClientHome> {
                 },
               );
             } else {
-              return const Padding(
-                padding: EdgeInsets.all(100.0),
-                child: SizedBox(
-                    height: 25, width: 25, child: CircularProgressIndicator()),
-              );
+              return const Center(child: CircularProgressIndicator());
             }
           },
         ),

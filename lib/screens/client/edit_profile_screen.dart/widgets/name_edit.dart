@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class NameField extends StatelessWidget {
-  const NameField({
+class NameEdit extends StatelessWidget {
+  const NameEdit({
     super.key,
     required TextEditingController firstNameController,
   }) : _firstNameController = firstNameController;

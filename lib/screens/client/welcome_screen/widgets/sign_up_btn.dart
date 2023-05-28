@@ -22,7 +22,6 @@ class SignUpButton extends StatelessWidget {
           gradient: LinearGradient(
             colors: [
               Color(0xFFA95EFA),
-              Color(0xFFA95EFA),
             ],
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,

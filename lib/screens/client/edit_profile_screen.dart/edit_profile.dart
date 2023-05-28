@@ -78,7 +78,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              NameField(
+                              NameEdit(
                                   firstNameController: _firstNameController),
                               PhoneNumber(
                                   phoneNumberController:

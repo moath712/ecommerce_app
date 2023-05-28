@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 
 class EditProductScreen extends StatefulWidget {
   final Map<String, dynamic> product;
@@ -188,6 +189,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 8),
                         child: TextField(
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                           controller: _priceController,
                           decoration: const InputDecoration(
                             labelText: 'Price',
@@ -209,6 +213,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 8),
                         child: TextField(
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                           controller: _quantityController,
                           decoration: const InputDecoration(
                             labelText: 'Quantity',

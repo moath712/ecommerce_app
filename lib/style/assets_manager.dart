@@ -8,6 +8,7 @@ class ImageAssets {
   static const String plus = "assets/images/plus.png";
   static const String minus = "assets/images/minus.png";
   static const String chair = "assets/images/chair.png";
+  static const String categorybox = "assets/images/categorybox.png";
 }
 
 class SvgAssets {}

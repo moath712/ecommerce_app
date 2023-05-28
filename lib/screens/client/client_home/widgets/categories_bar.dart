@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/screens/client/products_Screen/products_screen.dart';
+import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:flutter/material.dart';
 
 class CategoriesBar extends StatelessWidget {
@@ -23,7 +24,7 @@ class CategoriesBar extends StatelessWidget {
 
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Padding(
-              padding: EdgeInsets.all(100.0),
+              padding: EdgeInsets.symmetric(vertical: 170, horizontal: 50),
               child: SizedBox(
                   height: 25, width: 25, child: CircularProgressIndicator()),
             );
@@ -50,10 +51,7 @@ class CategoriesBar extends StatelessWidget {
                       ConnectionState.waiting) {
                     return const Padding(
                       padding: EdgeInsets.all(100.0),
-                      child: SizedBox(
-                          height: 25,
-                          width: 25,
-                          child: CircularProgressIndicator()),
+                      child: CircularProgressIndicator(),
                     );
                   }
 
@@ -80,7 +78,7 @@ class CategoriesBar extends StatelessWidget {
                             Positioned(
                               bottom: 0,
                               child: Image.asset(
-                                "assets/images/categorybox.png",
+                                ImageAssets.categorybox,
                                 width: 190,
                               ),
                             ),

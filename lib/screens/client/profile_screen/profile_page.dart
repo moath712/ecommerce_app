@@ -82,12 +82,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                   ),
                                   child: Row(
                                     children: [
-                                      IconButton(
-                                        icon: const Icon(
+                                      const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Icon(
                                           Icons.person,
                                           color: Colors.black,
                                         ),
-                                        onPressed: () {},
                                       ),
                                       Text(
                                         '${data['firstName']}',
@@ -111,12 +111,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                   ),
                                   child: Row(
                                     children: [
-                                      IconButton(
-                                        icon: const Icon(
+                                      const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Icon(
                                           Icons.phone_android,
                                           color: Colors.black,
                                         ),
-                                        onPressed: () {},
                                       ),
                                       Text(
                                         '${data['Phone Number']}',
@@ -140,12 +140,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                   ),
                                   child: Row(
                                     children: [
-                                      IconButton(
-                                        icon: const Icon(
+                                      const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Icon(
                                           Icons.email,
                                           color: Colors.black,
                                         ),
-                                        onPressed: () {},
                                       ),
                                       Text(
                                         '${_auth.currentUser!.email}',

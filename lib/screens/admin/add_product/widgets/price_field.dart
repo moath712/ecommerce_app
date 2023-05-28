@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class PriceField extends StatelessWidget {
   const PriceField({
@@ -24,6 +25,9 @@ class PriceField extends StatelessWidget {
           padding: const EdgeInsets.symmetric(
               horizontal: 16, vertical: 8),
           child: TextFormField(
+              inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ],
             controller: _priceController,
             decoration: const InputDecoration(
               labelText: 'Price',
