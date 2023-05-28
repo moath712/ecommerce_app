@@ -24,11 +24,13 @@ class _PasswordResetWidgetState extends State<PasswordResetWidget> {
           _isLoading = true; // add this line
         });
         await _auth.sendPasswordResetEmail(email: _email);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Password reset email sent'),
-          ),
-        );
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Password reset email sent'),
+            ),
+          );
+        }
       } catch (error) {
         if (kDebugMode) {
           print(error);
@@ -126,9 +128,9 @@ class _PasswordResetWidgetState extends State<PasswordResetWidget> {
                   ),
                   onPressed: _isLoading
                       ? null
-                      : _submit, // disable the button when loading
+                      : _submit, 
                   child: _isLoading
-                      ? CircularProgressIndicator() // show loading spinner when loading
+                      ? const CircularProgressIndicator() 
                       : const Text(
                           'Reset Password',
                           style: TextStyle(color: Colors.white),

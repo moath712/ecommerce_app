@@ -25,7 +25,7 @@ class NumberWidget extends StatelessWidget {
         keyboardType: TextInputType.number,
         inputFormatters: <TextInputFormatter>[
           FilteringTextInputFormatter.digitsOnly
-        ], // Only numbers can be entered
+        ], 
         decoration: InputDecoration(
           labelText: 'Phone Number',
           labelStyle: const TextStyle(color: Colors.black),
