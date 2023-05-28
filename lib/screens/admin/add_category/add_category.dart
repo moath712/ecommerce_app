@@ -79,107 +79,109 @@ class _AddCategoryWidgetState extends State<AddCategoryWidget> {
               height: MediaQuery.of(context).size.height,
               child: Form(
                 key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    const Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: Text(
-                        "Add a new category :",
-                        style: TextStyle(
-                            fontSize: 25, fontWeight: FontWeight.w300),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        height: 20,
                       ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    if (_imageData == null)
-                      GestureDetector(
-                        onTap: _pickImage,
-                        child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width / 2,
-                              height: 200,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border:
-                                    Border.all(width: 2, color: Colors.grey),
-                              ),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                child: Center(
-                                  child: SizedBox(
-                                    width: 200,
-                                    height: 200,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: const [
-                                        Icon(Icons.camera),
-                                        SizedBox(height: 10),
-                                        Text("Click here to add a picture")
-                                      ],
+                      const Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        child: Text(
+                          "Add a new category :",
+                          style: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.w300),
+                        ),
+                      ),
+                      if (_imageData == null)
+                        GestureDetector(
+                          onTap: _pickImage,
+                          child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width / 2,
+                                height: 200,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border:
+                                      Border.all(width: 2, color: Colors.grey),
+                                ),
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Center(
+                                    child: SizedBox(
+                                      width: 200,
+                                      height: 200,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: const [
+                                          Icon(Icons.camera),
+                                          SizedBox(height: 10),
+                                          Text("Click here to add a picture")
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
+                              )),
+                        ),
+                      if (_imageData != null)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width / 2,
+                            height: 200,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(width: 2, color: Colors.grey),
+                            ),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Center(
+                                child: SizedBox(
+                                    width: 200,
+                                    height: 200,
+                                    child: Image.memory(_imageData!)),
                               ),
-                            )),
-                      ),
-                    if (_imageData != null)
+                            ),
+                          ),
+                        ),
+                      CategoryNameField(
+                          categoryController: _categoryController),
+                      const SizedBox(height: 16.0),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          height: 200,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(width: 2, color: Colors.grey),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Center(
-                              child: SizedBox(
-                                  width: 200,
-                                  height: 200,
-                                  child: Image.memory(_imageData!)),
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.blueGrey.shade900,
+                              backgroundColor: const Color(0xFFA95EFA),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 16, horizontal: 32),
+                            ),
+                            onPressed: _submitForm,
+                            child: const Text(
+                              'Add Category',
+                              style: TextStyle(color: Colors.white),
                             ),
                           ),
                         ),
                       ),
-                    CategoryNameField(categoryController: _categoryController),
-                    const SizedBox(height: 16.0),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Center(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.blueGrey.shade900,
-                            backgroundColor: const Color(0xFFA95EFA),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 16, horizontal: 32),
-                          ),
-                          onPressed: _submitForm,
-                          child: const Text(
-                            'Add Category',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

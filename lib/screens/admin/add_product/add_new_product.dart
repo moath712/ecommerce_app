@@ -147,36 +147,101 @@ class _AddProductWidgetState extends State<AddProductWidget> {
       builder: (BuildContext context, BoxConstraints constraints) {
         return Scaffold(
           backgroundColor: const Color.fromARGB(255, 232, 236, 237),
-          body: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    color: Colors.white,
-                    width: MediaQuery.of(context).size.width / 2,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
-                              child: Text(
-                                "Add your new product details :",
-                                style: TextStyle(
-                                    fontSize: 25, fontWeight: FontWeight.w300),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Center(
+                child: Column(
+                  children: [
+                    Container(
+                      color: Colors.white,
+                      width: MediaQuery.of(context).size.width / 2,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                height: 20,
                               ),
-                            ),
-                            if (_imageData != null)
+                              const Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                child: Text(
+                                  "Add your new product details :",
+                                  style: TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.w300),
+                                ),
+                              ),
+                              if (_imageData != null)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(
+                                          width: 2, color: Colors.grey),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0),
+                                      child: Center(
+                                        child: SizedBox(
+                                            width: 200,
+                                            height: 200,
+                                            child: Image.memory(_imageData!)),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              if (_imageData == null)
+                                GestureDetector(
+                                  onTap: _pickImage,
+                                  child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 8),
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                2,
+                                        height: 200,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          border: Border.all(
+                                              width: 2, color: Colors.grey),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 8.0),
+                                          child: Center(
+                                            child: SizedBox(
+                                              width: 200,
+                                              height: 200,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: const [
+                                                  Icon(Icons.camera),
+                                                  SizedBox(height: 10),
+                                                  Text(
+                                                      "Click here to add a picture")
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      )),
+                                ),
+                              TitleField(titleController: _titleController),
+                              PriceField(priceController: _priceController),
+                              QuantityField(
+                                  quantityController: _quantityController),
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 16, vertical: 8),
@@ -187,152 +252,96 @@ class _AddProductWidgetState extends State<AddProductWidget> {
                                         width: 2, color: Colors.grey),
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0),
-                                    child: Center(
-                                      child: SizedBox(
-                                          width: 200,
-                                          height: 200,
-                                          child: Image.memory(_imageData!)),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 8),
+                                      child: StreamBuilder<QuerySnapshot>(
+                                        stream: FirebaseFirestore.instance
+                                            .collection('categories')
+                                            .snapshots(),
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<QuerySnapshot>
+                                                snapshot) {
+                                          if (!snapshot.hasData) {
+                                            return const Text("Loading...");
+                                          }
+
+                                          List<String> items = snapshot
+                                              .data!.docs
+                                              .map((doc) =>
+                                                  doc['name'] as String)
+                                              .toList();
+
+                                          if (_selectedCategory.isEmpty &&
+                                              items.isNotEmpty) {
+                                            _selectedCategory = items.first;
+                                          }
+
+                                          return DropdownButtonFormField<
+                                              String>(
+                                            value: _selectedCategory,
+                                            items: items.map((String item) {
+                                              return DropdownMenuItem<String>(
+                                                value: item,
+                                                child: Text(item),
+                                              );
+                                            }).toList(),
+                                            onChanged: (String? newValue) {
+                                              setState(() {
+                                                _selectedCategory = newValue!;
+                                              });
+                                            },
+                                          );
+                                        },
+                                      )),
+                                ),
+                              ),
+                              SubtitleField(
+                                  subTitleController: _subTitleController),
+                              DescriptionField(
+                                  descriptionController:
+                                      _descriptionController),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                child: Text(
+                                  "choose the color:",
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: _buildColorCheckboxes(),
+                                ),
+                              ),
+                              const SizedBox(height: 16.0),
+                              Center(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.blueGrey.shade900,
+                                    backgroundColor: const Color(0xFFA95EFA),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(25),
                                     ),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 16, horizontal: 32),
+                                  ),
+                                  onPressed: _submitForm,
+                                  child: const Text(
+                                    'Add Product',
+                                    style: TextStyle(color: Colors.white),
                                   ),
                                 ),
                               ),
-                            if (_imageData == null)
-                              GestureDetector(
-                                onTap: _pickImage,
-                                child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 8),
-                                    child: Container(
-                                      width:
-                                          MediaQuery.of(context).size.width / 2,
-                                      height: 200,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        border: Border.all(
-                                            width: 2, color: Colors.grey),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 8.0),
-                                        child: Center(
-                                          child: SizedBox(
-                                            width: 200,
-                                            height: 200,
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: const [
-                                                Icon(Icons.camera),
-                                                SizedBox(height: 10),
-                                                Text(
-                                                    "Click here to add a picture")
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    )),
-                              ),
-                            TitleField(titleController: _titleController),
-                            PriceField(priceController: _priceController),
-                            QuantityField(quantityController: _quantityController),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border:
-                                      Border.all(width: 2, color: Colors.grey),
-                                ),
-                                child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 8),
-                                    child: StreamBuilder<QuerySnapshot>(
-                                      stream: FirebaseFirestore.instance
-                                          .collection('categories')
-                                          .snapshots(),
-                                      builder: (BuildContext context,
-                                          AsyncSnapshot<QuerySnapshot>
-                                              snapshot) {
-                                        if (!snapshot.hasData) {
-                                          return const Text("Loading...");
-                                        }
-
-                                        List<String> items = snapshot.data!.docs
-                                            .map((doc) => doc['name'] as String)
-                                            .toList();
-
-                                        if (_selectedCategory.isEmpty &&
-                                            items.isNotEmpty) {
-                                          _selectedCategory = items.first;
-                                        }
-
-                                        return DropdownButtonFormField<String>(
-                                          value: _selectedCategory,
-                                          items: items.map((String item) {
-                                            return DropdownMenuItem<String>(
-                                              value: item,
-                                              child: Text(item),
-                                            );
-                                          }).toList(),
-                                          onChanged: (String? newValue) {
-                                            setState(() {
-                                              _selectedCategory = newValue!;
-                                            });
-                                          },
-                                        );
-                                      },
-                                    )),
-                              ),
-                            ),
-                            SubtitleField(subTitleController: _subTitleController),
-                            DescriptionField(descriptionController: _descriptionController),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
-                              child: Text(
-                                "choose the color:",
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: _buildColorCheckboxes(),
-                              ),
-                            ),
-                            const SizedBox(height: 16.0),
-                            Center(
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  foregroundColor: Colors.blueGrey.shade900,
-                                  backgroundColor: const Color(0xFFA95EFA),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 16, horizontal: 32),
-                                ),
-                                onPressed: _submitForm,
-                                child: const Text(
-                                  'Add Product',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -341,11 +350,3 @@ class _AddProductWidgetState extends State<AddProductWidget> {
     );
   }
 }
-
-
-
-
-
-
-
-
