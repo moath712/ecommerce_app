@@ -37,26 +37,20 @@ class UserOrdersPage extends ConsumerWidget {
     final userOrders = ref.watch(userOrdersProvider);
 
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 232, 236, 237),
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 232, 236, 237),
+        elevation: 0,
+        leading: IconButton(
+          icon: Image.asset(ImageAssets.back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: [ItemsNumber(userId: FirebaseAuth.instance.currentUser!.uid)],
+      ),
       body: Column(
         children: [
-          const SizedBox(
-            height: 50,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  icon: Image.asset(ImageAssets.back),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                ItemsNumber(userId: FirebaseAuth.instance.currentUser!.uid)
-              ],
-            ),
-          ),
           Expanded(
             child: ListView.builder(
               itemCount: userOrders.length,

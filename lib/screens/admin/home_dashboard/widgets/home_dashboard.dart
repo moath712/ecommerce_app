@@ -30,6 +30,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: <Widget>[
+                    const SizedBox(
+                      height: 50,
+                    ),
                     AspectRatio(
                       aspectRatio: 2.2,
                       child: Card(

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class NumberWidget extends StatelessWidget {
   const NumberWidget({
-    super.key,
+    Key? key,
     required TextEditingController phonenumbercontroller,
-  }) : _phonenumbercontroller = phonenumbercontroller;
+  })  : _phonenumbercontroller = phonenumbercontroller,
+        super(key: key);
 
   final TextEditingController _phonenumbercontroller;
 
@@ -21,23 +23,26 @@ class NumberWidget extends StatelessWidget {
           return null;
         },
         keyboardType: TextInputType.number,
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.digitsOnly
+        ], // Only numbers can be entered
         decoration: InputDecoration(
           labelText: 'Phone Number',
           labelStyle: const TextStyle(color: Colors.black),
           enabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.red),
+            borderSide: const BorderSide(   color: Color(0xFFA95EFA),),
             borderRadius: BorderRadius.circular(25),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.orange),
+            borderSide: const BorderSide(   color: Color(0xFFA95EFA),),
             borderRadius: BorderRadius.circular(25),
           ),
           errorBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.red),
+            borderSide: const BorderSide(   color: Color(0xFFA95EFA),),
             borderRadius: BorderRadius.circular(25),
           ),
           focusedErrorBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.red),
+            borderSide: const BorderSide(   color: Color(0xFFA95EFA),),
             borderRadius: BorderRadius.circular(25),
           ),
           fillColor: Colors.white,

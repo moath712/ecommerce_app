@@ -33,8 +33,13 @@ class _CheckAuthenticationState extends State<CheckAuthentication> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: CircularProgressIndicator()),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: const MaterialApp(
+        home: Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        ),
+      ),
     );
   }
 }

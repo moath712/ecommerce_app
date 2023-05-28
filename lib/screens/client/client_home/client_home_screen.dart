@@ -82,7 +82,11 @@ class _ClientHomeState extends State<ClientHome> {
                 },
               );
             } else {
-              return const CircularProgressIndicator();
+              return const Padding(
+                padding: EdgeInsets.all(100.0),
+                child: SizedBox(
+                    height: 25, width: 25, child: CircularProgressIndicator()),
+              );
             }
           },
         ),

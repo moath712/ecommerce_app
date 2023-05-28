@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:ecommerce_app/screens/admin/add_category/widgets/cateory_name.dart';
-import 'package:ecommerce_app/screens/admin/add_category/widgets/product_count_field.dart';
+
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:typed_data';
@@ -16,7 +16,6 @@ class AddCategoryWidget extends StatefulWidget {
 class _AddCategoryWidgetState extends State<AddCategoryWidget> {
   final _formKey = GlobalKey<FormState>();
   final _categoryController = TextEditingController();
-  final _productCountController = TextEditingController();
 
   Uint8List? _imageData;
 
@@ -35,22 +34,21 @@ class _AddCategoryWidgetState extends State<AddCategoryWidget> {
       final category = {
         'name': _categoryController.text,
         'imageUrl': url,
-        'productCount': int.parse(_productCountController.text),
       };
 
       await FirebaseFirestore.instance.collection('categories').add(category);
 
       _categoryController.clear();
       _imageData = null;
-      _productCountController.clear();
-if (context.mounted) {
-  ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Category added successfully'),
-          backgroundColor: Colors.green,
-        ),
-      );
-}
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Category added successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
     }
   }
 
@@ -114,7 +112,8 @@ if (context.mounted) {
                                     Border.all(width: 2, color: Colors.grey),
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
                                 child: Center(
                                   child: SizedBox(
                                     width: 200,
@@ -158,8 +157,6 @@ if (context.mounted) {
                         ),
                       ),
                     CategoryNameField(categoryController: _categoryController),
-                    ProductCountField(
-                        productCountController: _productCountController),
                     const SizedBox(height: 16.0),
                     Padding(
                       padding: const EdgeInsets.all(8.0),

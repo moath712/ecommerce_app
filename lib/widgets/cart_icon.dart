@@ -16,9 +16,9 @@ final itemsProvider = StreamProvider.autoDispose((ref) {
 });
 
 class ItemsNumber extends ConsumerWidget {
-  String userId = FirebaseAuth.instance.currentUser!.uid;
+  final String userId;
 
-  ItemsNumber({super.key, required this.userId});
+  const ItemsNumber({super.key, required this.userId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

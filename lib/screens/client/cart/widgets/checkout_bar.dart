@@ -60,7 +60,8 @@ class CheckOutBar extends StatelessWidget {
                                       colors: [
                                         Color(0xFFBB6BD9),
                                         Color(0xFFBB6BD9),
-                                        Color(0xFF151A6A),
+                                        Color(0xFFBB6BD9),
+                                        Color(0xFFBB6BD9),
                                       ],
                                       begin: Alignment.bottomLeft,
                                       end: Alignment.topRight,

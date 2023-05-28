@@ -13,6 +13,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
   late String _email, _password;
   bool _isHidden = true;
@@ -20,7 +21,17 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 232, 236, 237),
+        elevation: 0,
+        leading: IconButton(
+          icon: Image.asset(ImageAssets.back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      backgroundColor: const Color.fromARGB(255, 232, 236, 237),
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
         child: Form(
@@ -31,7 +42,6 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: MediaQuery.of(context).size.height * 0.1),
                 AnimatedTextKit(
                   animatedTexts: [
                     TypewriterAnimatedText(
@@ -88,21 +98,31 @@ class _LoginPageState extends State<LoginPage> {
       style: const TextStyle(color: Colors.black),
       decoration: InputDecoration(
         labelText: 'Email',
-        labelStyle: const TextStyle(color: Colors.black),
+        labelStyle: const TextStyle(
+          color: Colors.black,
+        ),
         enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.red),
+          borderSide: const BorderSide(
+            color: Color(0xFFA95EFA),
+          ),
           borderRadius: BorderRadius.circular(25),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.orange),
+          borderSide: const BorderSide(
+            color: Color(0xFFA95EFA),
+          ),
           borderRadius: BorderRadius.circular(25),
         ),
         errorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.red),
+          borderSide: const BorderSide(
+            color: Color(0xFFA95EFA),
+          ),
           borderRadius: BorderRadius.circular(25),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.red),
+          borderSide: const BorderSide(
+            color: Color(0xFFA95EFA),
+          ),
           borderRadius: BorderRadius.circular(25),
         ),
         fillColor: Colors.black,
@@ -125,19 +145,27 @@ class _LoginPageState extends State<LoginPage> {
         labelText: 'Password',
         labelStyle: const TextStyle(color: Colors.black),
         enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.red),
+          borderSide: const BorderSide(
+            color: Color(0xFFA95EFA),
+          ),
           borderRadius: BorderRadius.circular(25),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.orange),
+          borderSide: const BorderSide(
+            color: Color(0xFFA95EFA),
+          ),
           borderRadius: BorderRadius.circular(25),
         ),
         errorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.red),
+          borderSide: const BorderSide(
+            color: Color(0xFFA95EFA),
+          ),
           borderRadius: BorderRadius.circular(25),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.red),
+          borderSide: const BorderSide(
+            color: Color(0xFFA95EFA),
+          ),
           borderRadius: BorderRadius.circular(25),
         ),
         suffixIcon: IconButton(
@@ -160,33 +188,46 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget buildLoginButton() {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.blueGrey.shade900,
-        backgroundColor: const Color(0xFFA95EFA),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(25),
+    return SizedBox(
+      width: 240,
+      height: 60,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          foregroundColor: Colors.blueGrey.shade900,
+          backgroundColor: const Color(0xFFA95EFA),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
         ),
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+        child: _isLoading
+            ? const CircularProgressIndicator(color: Colors.white)
+            : const Text(
+                'Login',
+                style: TextStyle(fontSize: 18, color: Colors.white),
+              ),
+        onPressed: () {
+          if (_formKey.currentState!.validate()) {
+            _formKey.currentState!.save();
+            _login();
+          }
+        },
       ),
-      child: const Text('Login',
-          style: TextStyle(fontSize: 18, color: Colors.white)),
-      onPressed: () {
-        if (_formKey.currentState!.validate()) {
-          _formKey.currentState!.save();
-          _login();
-        }
-      },
     );
   }
 
   void _login() async {
+    setState(() {
+      _isLoading = true; // Start the loading process
+    });
+
     try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
+      //UserCredential userCredential =
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _email,
         password: _password,
       );
+
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -195,6 +236,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
         );
       }
+
       if (context.mounted) {
         Navigator.push(
           context,
@@ -216,6 +258,12 @@ class _LoginPageState extends State<LoginPage> {
             backgroundColor: Colors.red,
           ),
         );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false; // End the loading process
+        });
       }
     }
   }

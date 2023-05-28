@@ -1,6 +1,5 @@
 import 'package:ecommerce_app/widgets/cart_icon.dart';
 import 'package:ecommerce_app/screens/client/product_details/product_details.dart';
-
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +43,12 @@ class _CategoryProductsState extends State<CategoryProducts> {
           onPressed: () {
             Navigator.pop(context);
           },
+        ),
+        title: Center(
+          child: Text(
+            widget.categoryName,
+            style: const TextStyle(color: Colors.black, fontSize: 25),
+          ),
         ),
         actions: [ItemsNumber(userId: FirebaseAuth.instance.currentUser!.uid)],
       ),

@@ -22,7 +22,11 @@ class CategoriesBar extends StatelessWidget {
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return const Padding(
+              padding: EdgeInsets.all(100.0),
+              child: SizedBox(
+                  height: 25, width: 25, child: CircularProgressIndicator()),
+            );
           }
 
           return ListView.builder(
@@ -44,7 +48,13 @@ class CategoriesBar extends StatelessWidget {
                     AsyncSnapshot<QuerySnapshot> productSnapshot) {
                   if (productSnapshot.connectionState ==
                       ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
+                    return const Padding(
+                      padding: EdgeInsets.all(100.0),
+                      child: SizedBox(
+                          height: 25,
+                          width: 25,
+                          child: CircularProgressIndicator()),
+                    );
                   }
 
                   // Get the number of products

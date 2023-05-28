@@ -1,4 +1,3 @@
-
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -66,9 +65,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
           .collection('products')
           .doc(productId)
           .delete();
-    } catch (e) {if (kDebugMode) {
-      print("object");
-    }}
+    } catch (e) {
+      if (kDebugMode) {
+        print("object");
+      }
+    }
   }
 
   @override
@@ -260,99 +261,104 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.blueGrey.shade900,
-                          backgroundColor: const Color(0xFFA95EFA),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFA95EFA),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 16, horizontal: 32),
+                            ),
+                            onPressed: () async {
+                              final ref = FirebaseStorage.instance
+                                  .ref()
+                                  .child('categories')
+                                  .child(
+                                      '${DateTime.now().toIso8601String()}.png');
+
+                              await ref.putData(_imageData!);
+
+                              final url = await ref.getDownloadURL();
+                              final updatedProduct = {
+                                'title': _titleController.text,
+                                'price': int.parse(_priceController.text),
+                                'quantity': int.parse(_quantityController.text),
+                                'category': widget.category,
+                                'imageURL': url,
+                                'subTitle': _subTitleController.text,
+                                'description': _descriptionController.text,
+                              };
+
+                              await _updateProduct(widget.category,
+                                  widget.productId, updatedProduct);
+                              if (context.mounted) {}
+                              Navigator.pop(context);
+                            },
+                            child: const Text(
+                              'Update Product',
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 16, horizontal: 32),
-                        ),
-                        onPressed: () async {
-                          final ref = FirebaseStorage.instance
-                              .ref()
-                              .child('categories')
-                              .child('${DateTime.now().toIso8601String()}.png');
-
-                          await ref.putData(_imageData!);
-
-                          final url = await ref.getDownloadURL();
-                          final updatedProduct = {
-                            'title': _titleController.text,
-                            'price': int.parse(_priceController.text),
-                            'quantity': int.parse(_quantityController.text),
-                            'category': widget.category,
-                            'imageURL': url,
-                            'subTitle': _subTitleController.text,
-                            'description': _descriptionController.text,
-                          };
-
-                          await _updateProduct(widget.category,
-                              widget.productId, updatedProduct);
-                          if (context.mounted) {}
-                          Navigator.pop(context);
-                        },
-                        child: const Text(
-                          'Update Product',
-                          style: TextStyle(color: Colors.white),
                         ),
                       ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.blueGrey.shade900,
-                          backgroundColor: const Color(0xFFA95EFA),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 16, horizontal: 32),
-                        ),
-                        onPressed: () async {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text('Confirm deletion'),
-                                content: const Text(
-                                    'Are you sure you want to delete this product?'),
-                                actions: [
-                                  TextButton(
-                                    child: const Text('Cancel'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  TextButton(
-                                    child: const Text('Delete'),
-                                    onPressed: () {
-                                      _deleteProduct(
-                                        widget.category,
-                                        widget.productId,
-                                      );
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                ],
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 16, horizontal: 32),
+                            ),
+                            onPressed: () async {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Confirm deletion'),
+                                    content: const Text(
+                                        'Are you sure you want to delete this product?'),
+                                    actions: [
+                                      TextButton(
+                                        child: const Text('Cancel'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      TextButton(
+                                        child: const Text('Delete'),
+                                        onPressed: () {
+                                          _deleteProduct(
+                                            widget.category,
+                                            widget.productId,
+                                          );
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
                               );
                             },
-                          );
-                        },
-                        child: const Text(
-                          'Delete Product',
-                          style: TextStyle(color: Colors.white),
+                            child: const Text(
+                              'Delete Product',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),

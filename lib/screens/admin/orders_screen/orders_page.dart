@@ -66,8 +66,25 @@ class OrdersPage extends ConsumerWidget {
                         subtitle: Text(
                             'Placed at ${DateFormat.yMd().add_jm().format(order['timestamp'].toDate())}, Total: \$${totalPrice.toStringAsFixed(2)}'),
                         leading: CircleAvatar(
-                          backgroundImage: NetworkImage(userData['imageUrl']),
-                          radius: 30,
+                          radius: 30.0,
+                          child: ClipOval(
+                            child: AspectRatio(
+                              aspectRatio: 1 / 1,
+                              child: userData['imageUrl'] != null
+                                  ? Image.network(
+                                      userData['imageUrl'],
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (BuildContext context,
+                                          Object exception,
+                                          StackTrace? stackTrace) {
+                                        return const Icon(Icons.account_circle,
+                                            size: 80.0);
+                                      },
+                                    )
+                                  : const Icon(Icons.account_circle,
+                                      size: 30.0),
+                            ),
+                          ),
                         ),
                         children: [
                           ...cartItems.map((item) {

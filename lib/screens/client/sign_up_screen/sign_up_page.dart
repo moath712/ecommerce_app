@@ -4,6 +4,7 @@ import 'package:ecommerce_app/screens/client/sign_up_screen/widgets/address_fiel
 import 'package:ecommerce_app/screens/client/sign_up_screen/widgets/email_field.dart';
 import 'package:ecommerce_app/screens/client/sign_up_screen/widgets/name_field.dart';
 import 'package:ecommerce_app/screens/client/sign_up_screen/widgets/number_field.dart';
+import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,6 +24,7 @@ File? _image;
 final picker = ImagePicker();
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  bool _isLoading = false;
   Future pickImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
@@ -45,6 +47,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _passwordController = TextEditingController();
 
   Future<void> _signUp() async {
+    setState(() {
+      _isLoading = true; // Start the loading process
+    });
+
     try {
       final auth = FirebaseAuth.instance;
       final firestore = FirebaseFirestore.instance;
@@ -82,26 +88,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
           'Phone Number': phoneNumber,
         });
       }
-      if (context.mounted) {}
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const ClientHome()),
-      );
+
+      if (context.mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ClientHome()),
+        );
+      }
     } catch (e) {
       debugPrint("$e");
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false; // End the loading process
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 232, 236, 237),
+        elevation: 0,
+        leading: IconButton(
+          icon: Image.asset(ImageAssets.back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      backgroundColor: const Color.fromARGB(255, 232, 236, 237),
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(height: MediaQuery.of(context).size.height * 0.1),
             AnimatedTextKit(
               animatedTexts: [
                 TypewriterAnimatedText(
@@ -117,45 +140,63 @@ class _SignUpScreenState extends State<SignUpScreen> {
             const SizedBox(
               height: 15,
             ),
+            if (_image == null)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 80.0,
+                      child: ClipOval(
+                        child: AspectRatio(
+                          aspectRatio: 1 / 1,
+                          child: _image != null
+                              ? Image.file(
+                                  _image!,
+                                  fit: BoxFit.cover,
+                                )
+                              : const Icon(Icons.account_circle, size: 160.0),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             if (_image != null)
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CircleAvatar(
-                  radius: 80.0,
-                  child: ClipOval(
-                    child: AspectRatio(
-                      aspectRatio: 1 / 1,
-                      child: _image != null
-                          ? Image.file(
-                              _image!,
-                              fit: BoxFit.cover,
-                            )
-                          : const Icon(Icons.account_circle, size: 160.0),
+                child: Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 80.0,
+                      child: ClipOval(
+                        child: AspectRatio(
+                          aspectRatio: 1 / 1,
+                          child: _image != null
+                              ? Image.file(
+                                  _image!,
+                                  fit: BoxFit.cover,
+                                )
+                              : const Icon(Icons.account_circle, size: 160.0),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.blueGrey.shade900,
-                  backgroundColor: const Color(0xFFA95EFA),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-                ),
-                onPressed: pickImage,
-                child: const Text(
-                  'Pick Image',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
             const SizedBox(
-              height: 15,
+              height: 5,
+            ),
+            TextButton(
+              onPressed: pickImage,
+              child: const Text(
+                'Choose Picture',
+                style: TextStyle(
+                  color: Color(0xFFA95EFA),
+                  fontSize: 12,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
             ),
             EmailField(emailController: _emailController),
             Padding(
@@ -173,19 +214,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   labelText: 'Password',
                   labelStyle: const TextStyle(color: Colors.black),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.red),
+                    borderSide: const BorderSide(
+                      color: Color(0xFFA95EFA),
+                    ),
                     borderRadius: BorderRadius.circular(25),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.orange),
+                    borderSide: const BorderSide(
+                      color: Color(0xFFA95EFA),
+                    ),
                     borderRadius: BorderRadius.circular(25),
                   ),
                   errorBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.red),
+                    borderSide: const BorderSide(
+                      color: Color(0xFFA95EFA),
+                    ),
                     borderRadius: BorderRadius.circular(25),
                   ),
                   focusedErrorBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.red),
+                    borderSide: const BorderSide(
+                      color: Color(0xFFA95EFA),
+                    ),
                     borderRadius: BorderRadius.circular(25),
                   ),
                   suffixIcon: IconButton(
@@ -204,22 +253,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
               addressController: _addressController,
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.blueGrey.shade900,
-                backgroundColor: const Color(0xFFA95EFA),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: 240,
+                height: 60,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.blueGrey.shade900,
+                    backgroundColor: const Color(0xFFA95EFA),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 32),
+                  ),
+                  onPressed: _signUp,
+                  child: _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                          'Sign Up',
+                          style: TextStyle(color: Colors.white),
+                        ),
                 ),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
               ),
-              onPressed: _signUp,
-              child: const Text(
-                'Sign Up',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
+            )
           ],
         ),
       ),

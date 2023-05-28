@@ -16,27 +16,27 @@ class NameWidget extends StatelessWidget {
         controller: _firstNameController,
         validator: (value) {
           if (value!.isEmpty) {
-            return 'Please enter your first name';
+            return 'Please enter your Name';
           }
           return null;
         },
         decoration: InputDecoration(
-          labelText: 'First Name',
+          labelText: 'Name',
           labelStyle: const TextStyle(color: Colors.black),
           enabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.red),
+            borderSide: const BorderSide(   color: Color(0xFFA95EFA),),
             borderRadius: BorderRadius.circular(25),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.orange),
+            borderSide: const BorderSide(   color: Color(0xFFA95EFA),),
             borderRadius: BorderRadius.circular(25),
           ),
           errorBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.red),
+            borderSide: const BorderSide(   color: Color(0xFFA95EFA),),
             borderRadius: BorderRadius.circular(25),
           ),
           focusedErrorBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.red),
+            borderSide: const BorderSide(   color: Color(0xFFA95EFA),),
             borderRadius: BorderRadius.circular(25),
           ),
           fillColor: Colors.white,
