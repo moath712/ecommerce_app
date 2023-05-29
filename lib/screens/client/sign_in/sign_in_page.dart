@@ -1,5 +1,6 @@
 import 'package:ecommerce_app/screens/client/client_home/client_home_screen.dart';
 import 'package:ecommerce_app/screens/client/sign_up_screen/sign_up_page.dart';
+import 'package:ecommerce_app/style/app_style.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -96,36 +97,9 @@ class _LoginPageState extends State<LoginPage> {
   Widget buildEmailField() {
     return TextFormField(
       style: const TextStyle(color: Colors.black),
-      decoration: InputDecoration(
-        labelText: 'Email',
-        labelStyle: const TextStyle(
-          color: Colors.black,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Color(0xFFA95EFA),
-          ),
-          borderRadius: BorderRadius.circular(25),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Color(0xFFA95EFA),
-          ),
-          borderRadius: BorderRadius.circular(25),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Color(0xFFA95EFA),
-          ),
-          borderRadius: BorderRadius.circular(25),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Color(0xFFA95EFA),
-          ),
-          borderRadius: BorderRadius.circular(25),
-        ),
-        fillColor: Colors.black,
+      decoration: AppStyles.formStyle(
+        context,
+        'Email',
       ),
       keyboardType: TextInputType.emailAddress,
       validator: (value) {
@@ -141,33 +115,9 @@ class _LoginPageState extends State<LoginPage> {
   Widget buildPasswordField() {
     return TextFormField(
       style: const TextStyle(color: Colors.black),
-      decoration: InputDecoration(
-        labelText: 'Password',
-        labelStyle: const TextStyle(color: Colors.black),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Color(0xFFA95EFA),
-          ),
-          borderRadius: BorderRadius.circular(25),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Color(0xFFA95EFA),
-          ),
-          borderRadius: BorderRadius.circular(25),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Color(0xFFA95EFA),
-          ),
-          borderRadius: BorderRadius.circular(25),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Color(0xFFA95EFA),
-          ),
-          borderRadius: BorderRadius.circular(25),
-        ),
+      decoration: AppStyles.formStyle(
+        context,
+        'Password',
         suffixIcon: IconButton(
           onPressed: () => setState(() => _isHidden = !_isHidden),
           icon: Icon(
@@ -218,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void _login() async {
     setState(() {
-      _isLoading = true; // Start the loading process
+      _isLoading = true;
     });
 
     try {

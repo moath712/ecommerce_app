@@ -1,3 +1,4 @@
+import 'package:ecommerce_app/style/add_edit_field/add_edit_field.dart';
 import 'package:flutter/material.dart';
 
 class SubtitleField extends StatelessWidget {
@@ -14,11 +15,7 @@ class SubtitleField extends StatelessWidget {
       padding: const EdgeInsets.symmetric(
           horizontal: 16, vertical: 8),
       child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border:
-              Border.all(width: 2, color: Colors.grey),
-        ),
+        decoration: CustomBoxDecoration(),
         child: Padding(
           padding: const EdgeInsets.symmetric(
               horizontal: 16, vertical: 8),

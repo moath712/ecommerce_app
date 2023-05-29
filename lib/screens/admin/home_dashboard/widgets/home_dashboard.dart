@@ -1,31 +1,39 @@
-import 'package:ecommerce_app/screens/admin/home_dashboard/models/home_dashboard_model.dart';
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_app/model/dashboard_model/home_dashboard_model.dart';
+import 'package:fl_chart/fl_chart.dart';
 
-class DashboardScreen extends StatefulWidget {
+final dataProvider = StreamProvider<DataModel>((ref) async* {
+  final userStream = FirebaseFirestore.instance
+      .collection('users')
+      .snapshots()
+      .map((snapshot) => snapshot.docs.length.toDouble());
+  final orderStream = FirebaseFirestore.instance
+      .collection('orders')
+      .snapshots()
+      .map((snapshot) => snapshot.docs.length.toDouble());
+
+  await for (final userCount in userStream) {
+    await for (final orderCount in orderStream) {
+      yield DataModel(users: [userCount], orders: [orderCount]);
+    }
+  }
+});
+
+class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
   @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dataAsyncValue = ref.watch(dataProvider);
 
-class _DashboardScreenState extends State<DashboardScreen> {
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SingleChildScrollView(
-          child: FutureBuilder<DataModel>(
-            future: _fetchData(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-
-              final data = snapshot.data!;
-
+          child: dataAsyncValue.when(
+            data: (data) {
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -48,57 +56,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        color: Colors.white,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Row(
-                                children: const [
-                                  Text(
-                                    'Users',
-                                    style: TextStyle(
-                                      color: Colors.blue,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  CircleAvatar(
-                                    radius: 9,
-                                    backgroundColor: Colors.blue,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 20),
-                              Row(
-                                children: const [
-                                  Text(
-                                    'Orders',
-                                    style: TextStyle(
-                                      color: Colors.green,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  CircleAvatar(
-                                    radius: 9,
-                                    backgroundColor: Colors.green,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                    // rest of your UI...
                   ],
                 ),
               );
             },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, stack) => Text('Error: $error'),
           ),
         ),
       ),
@@ -132,17 +96,5 @@ class _DashboardScreenState extends State<DashboardScreen> {
       BarChartGroupData(x: 1, barRods: userBar, showingTooltipIndicators: [0]),
       BarChartGroupData(x: 2, barRods: orderBar, showingTooltipIndicators: [0]),
     ];
-  }
-
-  Future<DataModel> _fetchData() async {
-    // Fetch data from Firestore and process it
-    final users = await FirebaseFirestore.instance.collection('users').get();
-    final orders = await FirebaseFirestore.instance.collection('orders').get();
-
-    // Mock data
-    final List<double> userNumbers = [users.docs.length.toDouble()];
-    final List<double> orderNumbers = [orders.docs.length.toDouble()];
-
-    return DataModel(users: userNumbers, orders: orderNumbers);
   }
 }

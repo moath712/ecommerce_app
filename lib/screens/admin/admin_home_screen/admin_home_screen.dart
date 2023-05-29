@@ -1,6 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/screens/admin/admin_home_screen/widgets/itemwidget.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final productProvider = StreamProvider.family
+    .autoDispose<QuerySnapshot, String>((ref, categoryName) {
+  return FirebaseFirestore.instance
+      .collection('categories')
+      .doc(categoryName)
+      .collection('products')
+      .snapshots();
+});
+
+final categoryProvider = StreamProvider.autoDispose<QuerySnapshot>((ref) {
+  return FirebaseFirestore.instance.collection('categories').snapshots();
+});
 
 class ProductsAdmin extends StatefulWidget {
   const ProductsAdmin({super.key});
@@ -11,21 +25,6 @@ class ProductsAdmin extends StatefulWidget {
 
 class _ProductsAdminState extends State<ProductsAdmin> {
   String _selectedCategory = 'Sofa';
-  late Stream<QuerySnapshot> _productStream;
-
-  @override
-  void initState() {
-    super.initState();
-    _updateProductStream(_selectedCategory);
-  }
-
-  void _updateProductStream(String categoryName) {
-    _productStream = FirebaseFirestore.instance
-        .collection('categories')
-        .doc(categoryName)
-        .collection('products')
-        .snapshots();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,79 +51,78 @@ class _ProductsAdminState extends State<ProductsAdmin> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: StreamBuilder<QuerySnapshot>(
-                                  stream: FirebaseFirestore.instance
-                                      .collection('categories')
-                                      .snapshots(),
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot<QuerySnapshot> snapshot) {
-                                    if (snapshot.hasError) {
-                                      return const Text('Something went wrong');
-                                    }
+                                child: Consumer(
+                                  builder: (context, WidgetRef ref, child) {
+                                    final snapshot =
+                                        ref.watch(categoryProvider);
+                                    return snapshot.when(
+                                      data: (QuerySnapshot data) {
+                                        List<String> categories = data.docs
+                                            .map((doc) => doc['name'] as String)
+                                            .toList();
 
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return const Center();
-                                    }
-
-                                    List<String> categories = snapshot
-                                        .data!.docs
-                                        .map((doc) => doc['name'] as String)
-                                        .toList();
-
-                                    return Container(
-                                      width: 200,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        border: Border.all(
-                                          width: 2,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      child: DropdownButton<String>(
-                                        dropdownColor: Colors.white,
-                                        value: _selectedCategory,
-                                        hint: const Text('Choose Category'),
-                                        icon: const Padding(
-                                          padding: EdgeInsets.only(left: 8.0),
-                                          child: Icon(
-                                            Icons.keyboard_double_arrow_down,
-                                            color: Colors.grey,
+                                        return Container(
+                                          width: 200,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            border: Border.all(
+                                              width: 2,
+                                              color: Colors.grey,
+                                            ),
                                           ),
-                                        ),
-                                        iconSize: 24,
-                                        elevation: 16,
-                                        style: const TextStyle(
-                                            color: Colors.grey, fontSize: 20),
-                                        underline: const SizedBox(),
-                                        onChanged: (String? newValue) {
-                                          setState(() {
-                                            _selectedCategory = newValue!;
-                                            _updateProductStream(newValue);
-                                          });
-                                        },
-                                        items: categories
-                                            .map<DropdownMenuItem<String>>(
-                                                (String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 30.0),
-                                              child: Text(
-                                                value,
-                                                textAlign: TextAlign.left,
-                                                style: const TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 18,
-                                                  letterSpacing: 0.0,
-                                                  color: Colors.grey,
-                                                ),
+                                          child: DropdownButton<String>(
+                                            dropdownColor: Colors.white,
+                                            value: _selectedCategory,
+                                            hint: const Text('Choose Category'),
+                                            icon: const Padding(
+                                              padding:
+                                                  EdgeInsets.only(left: 8.0),
+                                              child: Icon(
+                                                Icons
+                                                    .keyboard_double_arrow_down,
+                                                color: Colors.grey,
                                               ),
                                             ),
-                                          );
-                                        }).toList(),
-                                      ),
+                                            iconSize: 24,
+                                            elevation: 16,
+                                            style: const TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 20),
+                                            underline: const SizedBox(),
+                                            onChanged: (String? newValue) {
+                                              setState(() {
+                                                _selectedCategory = newValue!;
+                                              });
+                                            },
+                                            items: categories
+                                                .map<DropdownMenuItem<String>>(
+                                                    (String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 30.0),
+                                                  child: Text(
+                                                    value,
+                                                    textAlign: TextAlign.left,
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 18,
+                                                      letterSpacing: 0.0,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            }).toList(),
+                                          ),
+                                        );
+                                      },
+                                      loading: () => const Center(),
+                                      error: (error, stack) =>
+                                          const Text('Something went wrong'),
                                     );
                                   },
                                 ),
@@ -138,35 +136,37 @@ class _ProductsAdminState extends State<ProductsAdmin> {
                             color: Colors.white,
                             height: MediaQuery.of(context).size.height - 200,
                             width: MediaQuery.of(context).size.width,
-                            child: StreamBuilder<QuerySnapshot>(
-                              stream: _productStream,
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                                if (snapshot.hasError) {
-                                  return const Center(
-                                      child: Text('Something went wrong'));
-                                }
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                      child: CircularProgressIndicator());
-                                }
-                                return GridView.builder(
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: crossAxisCount,
-                                    childAspectRatio: 0.7,
-                                    crossAxisSpacing: 5,
-                                    mainAxisSpacing: 4,
-                                  ),
-                                  itemCount: snapshot.data!.docs.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    final product = snapshot.data!.docs[index]
-                                        .data() as Map<String, dynamic>;
+                            child: Consumer(
+                              builder: (context, WidgetRef ref, child) {
+                                final snapshot = ref
+                                    .watch(productProvider(_selectedCategory));
+                                return snapshot.when(
+                                  data: (QuerySnapshot data) {
+                                    return GridView.builder(
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: crossAxisCount,
+                                        childAspectRatio: 0.7,
+                                        crossAxisSpacing: 5,
+                                        mainAxisSpacing: 4,
+                                      ),
+                                      itemCount: data.docs.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        final product = data.docs[index].data()
+                                            as Map<String, dynamic>;
 
-                                    return Itemwidget(product: product, selectedCategory: _selectedCategory);
+                                        return Itemwidget(
+                                            product: product,
+                                            selectedCategory:
+                                                _selectedCategory);
+                                      },
+                                    );
                                   },
+                                  loading: () => const Center(
+                                      child: CircularProgressIndicator()),
+                                  error: (error, stack) => const Center(
+                                      child: Text('Something went wrong')),
                                 );
                               },
                             ),

@@ -1,10 +1,10 @@
 import 'package:ecommerce_app/screens/client/all_products/all_products.dart';
 import 'package:ecommerce_app/widgets/cart_icon.dart';
 import 'package:ecommerce_app/screens/client/client_home/widgets/categories_bar.dart';
-import 'package:ecommerce_app/screens/client/client_home/widgets/drawer/logout_drawer.dart';
-import 'package:ecommerce_app/screens/client/client_home/widgets/drawer/orders_drawer.dart';
-import 'package:ecommerce_app/screens/client/client_home/widgets/drawer/profile_drawer.dart';
-import 'package:ecommerce_app/screens/client/client_home/widgets/drawer/user_drawer_data.dart';
+import 'package:ecommerce_app/screens/client/client_home/widgets/drawer/widgets/logout_drawer.dart';
+import 'package:ecommerce_app/screens/client/client_home/widgets/drawer/widgets/orders_drawer.dart';
+import 'package:ecommerce_app/screens/client/client_home/widgets/drawer/widgets/profile_drawer.dart';
+import 'package:ecommerce_app/screens/client/client_home/widgets/drawer/widgets/user_drawer_data.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -47,46 +47,7 @@ class _ClientHomeState extends State<ClientHome> {
         actions: [ItemsNumber(userId: FirebaseAuth.instance.currentUser!.uid)],
       ),
       key: _scaffoldKey,
-      drawer: Drawer(
-        child: FutureBuilder<User?>(
-          future: Future.value(auth.currentUser),
-          builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
-            if (snapshot.hasData) {
-              return StreamBuilder<DocumentSnapshot>(
-                stream: firestore
-                    .collection('users')
-                    .doc(snapshot.data?.uid)
-                    .snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<DocumentSnapshot> snapshot) {
-                  if (snapshot.hasData && snapshot.data!.exists) {
-                    Map<String, dynamic> userData =
-                        snapshot.data!.data() as Map<String, dynamic>;
-                    return ListView(
-                      padding: EdgeInsets.zero,
-                      children: <Widget>[
-                        DrawerHeader(
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFA95EFA),
-                          ),
-                          child: DrawerData(userData: userData),
-                        ),
-                        const ProfileDrawer(),
-                        const OrdersDrawer(),
-                        const LogoutDrawer(),
-                      ],
-                    );
-                  } else {
-                    return const CircularProgressIndicator();
-                  }
-                },
-              );
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          },
-        ),
-      ),
+      drawer: DrawerWidget(auth: auth, firestore: firestore),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,6 +86,61 @@ class _ClientHomeState extends State<ClientHome> {
             const AllProductsGrid()
           ],
         ),
+      ),
+    );
+  }
+}
+
+class DrawerWidget extends StatelessWidget {
+  const DrawerWidget({
+    super.key,
+    required this.auth,
+    required this.firestore,
+  });
+
+  final FirebaseAuth auth;
+  final FirebaseFirestore firestore;
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: FutureBuilder<User?>(
+        future: Future.value(auth.currentUser),
+        builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
+          if (snapshot.hasData) {
+            return StreamBuilder<DocumentSnapshot>(
+              stream: firestore
+                  .collection('users')
+                  .doc(snapshot.data?.uid)
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<DocumentSnapshot> snapshot) {
+                if (snapshot.hasData && snapshot.data!.exists) {
+                  Map<String, dynamic> userData =
+                      snapshot.data!.data() as Map<String, dynamic>;
+                  return ListView(
+                    padding: EdgeInsets.zero,
+                    children: <Widget>[
+                      DrawerHeader(
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFA95EFA),
+                        ),
+                        child: DrawerData(userData: userData),
+                      ),
+                      const ProfileDrawer(),
+                      const OrdersDrawer(),
+                      const LogoutDrawer(),
+                    ],
+                  );
+                } else {
+                  return const CircularProgressIndicator();
+                }
+              },
+            );
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
       ),
     );
   }

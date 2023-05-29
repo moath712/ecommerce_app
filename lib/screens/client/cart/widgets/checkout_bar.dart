@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_app/services/manager/cart_logic/cart_logic.dart';
 import 'package:ecommerce_app/style/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../cart_page.dart';
 
 class CheckOutBar extends StatelessWidget {
   const CheckOutBar({
@@ -56,16 +56,7 @@ class CheckOutBar extends StatelessWidget {
                                 onTap: () => cartNotifier.confirmOrder(context),
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                      colors: [
-                                        Color(0xFFBB6BD9),
-                                        Color(0xFFBB6BD9),
-                                        Color(0xFFBB6BD9),
-                                        Color(0xFFBB6BD9),
-                                      ],
-                                      begin: Alignment.bottomLeft,
-                                      end: Alignment.topRight,
-                                    ),
+                                   color:   const Color(0xFFBB6BD9),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: const Center(

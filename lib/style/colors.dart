@@ -31,4 +31,5 @@ class AppColors {
   static const Color twitterbox = Color(0xFFACF8FF);
   static const Color callbox = Color(0xFFFCE2B6);
   static const Color inboxbox = Color(0xFFD3C7C7);
+   static const Color text = Color(0xff757575);
 }

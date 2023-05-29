@@ -1,5 +1,6 @@
+import 'package:ecommerce_app/style/add_edit_field/add_edit_field.dart';
+import 'package:ecommerce_app/services/manager/imagepicker/image_picker.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -22,19 +23,7 @@ class EditProductScreen extends StatefulWidget {
 }
 
 class _EditProductScreenState extends State<EditProductScreen> {
-  Uint8List? _imageData;
-  Future<void> _pickImage() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(type: FileType.image);
-
-    if (result != null) {
-      Uint8List fileBytes = result.files.first.bytes!;
-
-      setState(() {
-        _imageData = fileBytes;
-      });
-    }
-  }
+  final ImagePickerService _imagePickerService = ImagePickerService();
 
   late final TextEditingController _titleController =
       TextEditingController(text: widget.product['title']);
@@ -105,7 +94,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           TextStyle(fontSize: 25, fontWeight: FontWeight.w300),
                     ),
                   ),
-                  if (_imageData != null)
+                  if (_imagePickerService.imageData != null)
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
@@ -117,11 +106,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           child: SizedBox(
                               width: 200,
                               height: 200,
-                              child: Image.memory(_imageData!)),
+                              child:
+                                  Image.memory(_imagePickerService.imageData!)),
                         ),
                       ),
                     ),
-                  if (_imageData == null)
+                  if (_imagePickerService.imageData == null)
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
@@ -150,7 +140,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 16, horizontal: 32),
                         ),
-                        onPressed: _pickImage,
+                        onPressed: () async {
+                          await _imagePickerService.pickImage();
+                          setState(() {});
+                        },
                         child: const Text(
                           'Change Image',
                           style: TextStyle(color: Colors.white),
@@ -161,10 +154,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(width: 2, color: Colors.grey),
-                      ),
+                      decoration: CustomBoxDecoration(),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 8),
@@ -181,10 +171,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(width: 2, color: Colors.grey),
-                      ),
+                      decoration: CustomBoxDecoration(),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 8),
@@ -205,10 +192,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(width: 2, color: Colors.grey),
-                      ),
+                      decoration: CustomBoxDecoration(),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 8),
@@ -229,10 +213,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(width: 2, color: Colors.grey),
-                      ),
+                      decoration: CustomBoxDecoration(),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 8),
@@ -249,10 +230,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(width: 2, color: Colors.grey),
-                      ),
+                      decoration: CustomBoxDecoration(),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 8),
@@ -285,7 +263,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                   vertical: 16, horizontal: 32),
                             ),
                             onPressed: () async {
-                              if (_imageData == null) {
+                              if (_imagePickerService.imageData == null) {
                                 final url = widget.product['imageURL'];
                                 final updatedProduct = {
                                   'title': _titleController.text,
@@ -305,7 +283,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                     .child('categories')
                                     .child(
                                         '${DateTime.now().toIso8601String()}.png');
-                                await ref.putData(_imageData!);
+                                await ref
+                                    .putData(_imagePickerService.imageData!);
                                 final url = await ref.getDownloadURL();
                                 final updatedProduct = {
                                   'title': _titleController.text,

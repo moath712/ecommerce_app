@@ -19,13 +19,7 @@ class SignUpButton extends StatelessWidget {
         width: 208,
         height: 48,
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color(0xFFA95EFA),
-            ],
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-          ),
+          color: Color(0xFFA95EFA),
           borderRadius: BorderRadius.all(
             Radius.circular(25.0),
           ),

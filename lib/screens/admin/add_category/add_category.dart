@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_app/services/manager/imagepicker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:ecommerce_app/screens/admin/add_category/widgets/cateory_name.dart';
 
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
-import 'dart:typed_data';
 
 class AddCategoryWidget extends StatefulWidget {
   const AddCategoryWidget({super.key});
@@ -14,10 +13,9 @@ class AddCategoryWidget extends StatefulWidget {
 }
 
 class _AddCategoryWidgetState extends State<AddCategoryWidget> {
+  final ImagePickerService _imagePickerService = ImagePickerService();
   final _formKey = GlobalKey<FormState>();
   final _categoryController = TextEditingController();
-
-  Uint8List? _imageData;
 
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
@@ -27,7 +25,7 @@ class _AddCategoryWidgetState extends State<AddCategoryWidget> {
           .child('categories')
           .child('${DateTime.now().toIso8601String()}.png');
 
-      await ref.putData(_imageData!);
+      await ref.putData(_imagePickerService.imageData!);
 
       final url = await ref.getDownloadURL();
 
@@ -39,7 +37,6 @@ class _AddCategoryWidgetState extends State<AddCategoryWidget> {
       await FirebaseFirestore.instance.collection('categories').add(category);
 
       _categoryController.clear();
-      _imageData = null;
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -49,19 +46,6 @@ class _AddCategoryWidgetState extends State<AddCategoryWidget> {
           ),
         );
       }
-    }
-  }
-
-  Future<void> _pickImage() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(type: FileType.image);
-
-    if (result != null) {
-      Uint8List fileBytes = result.files.first.bytes!;
-
-      setState(() {
-        _imageData = fileBytes;
-      });
     }
   }
 
@@ -96,9 +80,12 @@ class _AddCategoryWidgetState extends State<AddCategoryWidget> {
                               fontSize: 25, fontWeight: FontWeight.w300),
                         ),
                       ),
-                      if (_imageData == null)
+                      if (_imagePickerService.imageData == null)
                         GestureDetector(
-                          onTap: _pickImage,
+                          onTap: () async {
+                            await _imagePickerService.pickImage();
+                            setState(() {});
+                          },
                           child: Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 8),
@@ -133,7 +120,7 @@ class _AddCategoryWidgetState extends State<AddCategoryWidget> {
                                 ),
                               )),
                         ),
-                      if (_imageData != null)
+                      if (_imagePickerService.imageData != null)
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 8),
@@ -151,7 +138,8 @@ class _AddCategoryWidgetState extends State<AddCategoryWidget> {
                                 child: SizedBox(
                                     width: 200,
                                     height: 200,
-                                    child: Image.memory(_imageData!)),
+                                    child: Image.memory(
+                                        _imagePickerService.imageData!)),
                               ),
                             ),
                           ),

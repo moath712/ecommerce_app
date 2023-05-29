@@ -1,3 +1,4 @@
+import 'package:ecommerce_app/services/manager/color_list/color_list.dart';
 import 'package:ecommerce_app/widgets/cart_icon.dart';
 import 'package:ecommerce_app/screens/client/orders/user_orders_screen.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
@@ -44,14 +45,14 @@ class CartState extends StateNotifier<List<Map<String, dynamic>>> {
         DocumentReference docRef = await cartRef.add(productWithUserQuantity);
         productWithUserQuantity['id'] = docRef.id;
       }
-if (context.mounted) {
-  ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Product added to cart'),
-          backgroundColor: Colors.green,
-        ),
-      );
-}
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Product added to cart'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -273,15 +274,8 @@ class ProductDetails extends ConsumerWidget {
                                             !isLoading)
                                         ? () {
                                             final Map<String, String>
-                                                colorHexValues = {
-                                              'Red': '#FF0000',
-                                              'Blue': '#0000FF',
-                                              'Green': '#008000',
-                                             
-                                              'Black': '#000000',
-                                              'White': '#FFFFFF',
-                                            };
-
+                                                colorHexValues = ColorUtils
+                                                    .generateColorHexValues();
                                             ref
                                                 .read(cartProvider.notifier)
                                                 .addToCart({

@@ -1,13 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_app/screens/admin/add_product/widgets/build_color_check_boxes.dart';
 import 'package:ecommerce_app/screens/admin/add_product/widgets/title_field.dart';
 import 'package:ecommerce_app/screens/admin/add_product/widgets/description_field.dart';
 import 'package:ecommerce_app/screens/admin/add_product/widgets/price_field.dart';
 import 'package:ecommerce_app/screens/admin/add_product/widgets/quantity_field.dart';
 import 'package:ecommerce_app/screens/admin/add_product/widgets/subtitle_field.dart';
+import 'package:ecommerce_app/style/add_edit_field/add_edit_field.dart';
+import 'package:ecommerce_app/services/manager/color_list/color_list.dart';
+import 'package:ecommerce_app/services/manager/imagepicker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
-import 'dart:typed_data';
 
 class AddProductWidget extends StatefulWidget {
   const AddProductWidget({super.key});
@@ -15,6 +18,10 @@ class AddProductWidget extends StatefulWidget {
   @override
   State<AddProductWidget> createState() => _AddProductWidgetState();
 }
+
+final Map<String, String> _colorHexValues = ColorUtils.generateColorHexValues();
+
+final ImagePickerService _imagePickerService = ImagePickerService();
 
 class _AddProductWidgetState extends State<AddProductWidget> {
   final _formKey = GlobalKey<FormState>();
@@ -26,69 +33,7 @@ class _AddProductWidgetState extends State<AddProductWidget> {
   final _subTitleController = TextEditingController();
   final _descriptionController = TextEditingController();
 
-  final Map<String, String> _colorHexValues = {
-    'Red': '#FF0000',
-    'Blue': '#0000FF',
-    'Green': '#008000',
-    'Black': '#000000',
-    'White': '#FFFFFF',
-  };
   final List<Map<String, String>> _selectedColorsWithHex = [];
-
-  Uint8List? _imageData;
-  Future<void> _pickImage() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(type: FileType.image);
-
-    if (result != null) {
-      Uint8List fileBytes = result.files.first.bytes!;
-
-      setState(() {
-        _imageData = fileBytes;
-      });
-    }
-  }
-
-  List<Widget> _buildColorCheckboxes() {
-    return _colorHexValues.entries.map((entry) {
-      return CheckboxListTile(
-        title: Row(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Colors.grey,
-                  width: 1.0,
-                ),
-              ),
-              child: CircleAvatar(
-                backgroundColor:
-                    Color(int.parse('0xFF${entry.value.substring(1)}')),
-                radius: 10,
-              ),
-            ),
-            const SizedBox(width: 10),
-            Text(entry.key),
-          ],
-        ),
-        value: _selectedColorsWithHex
-            .any((element) => element['color'] == entry.key),
-        onChanged: (bool? newValue) {
-          setState(() {
-            if (newValue!) {
-              _selectedColorsWithHex.add(
-                {'color': entry.key, 'hex': entry.value},
-              );
-            } else {
-              _selectedColorsWithHex
-                  .removeWhere((element) => element['color'] == entry.key);
-            }
-          });
-        },
-      );
-    }).toList();
-  }
 
   String _selectedCategory = "";
   void _submitForm() async {
@@ -98,7 +43,7 @@ class _AddProductWidgetState extends State<AddProductWidget> {
           .child('categories')
           .child('${DateTime.now().toIso8601String()}.png');
 
-      await ref.putData(_imageData!);
+      await ref.putData(_imagePickerService.imageData!);
 
       final url = await ref.getDownloadURL();
       final product = {
@@ -176,16 +121,12 @@ class _AddProductWidgetState extends State<AddProductWidget> {
                                       fontWeight: FontWeight.w300),
                                 ),
                               ),
-                              if (_imageData != null)
+                              if (_imagePickerService.imageData != null)
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 16, vertical: 8),
                                   child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      border: Border.all(
-                                          width: 2, color: Colors.grey),
-                                    ),
+                                    decoration: CustomBoxDecoration(),
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 8.0),
@@ -193,14 +134,19 @@ class _AddProductWidgetState extends State<AddProductWidget> {
                                         child: SizedBox(
                                             width: 200,
                                             height: 200,
-                                            child: Image.memory(_imageData!)),
+                                            child: Image.memory(
+                                                _imagePickerService
+                                                    .imageData!)),
                                       ),
                                     ),
                                   ),
                                 ),
-                              if (_imageData == null)
+                              if (_imagePickerService.imageData == null)
                                 GestureDetector(
-                                  onTap: _pickImage,
+                                  onTap: () async {
+                                    await _imagePickerService.pickImage();
+                                    setState(() {});
+                                  },
                                   child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 16, vertical: 8),
@@ -246,11 +192,7 @@ class _AddProductWidgetState extends State<AddProductWidget> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 16, vertical: 8),
                                 child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(
-                                        width: 2, color: Colors.grey),
-                                  ),
+                                  decoration: CustomBoxDecoration(),
                                   child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 16, vertical: 8),
@@ -313,7 +255,13 @@ class _AddProductWidgetState extends State<AddProductWidget> {
                                     horizontal: 16, vertical: 8),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: _buildColorCheckboxes(),
+                                  children: _colorHexValues.entries
+                                      .map((entry) => ColorCheckbox(
+                                            entry: entry,
+                                            selectedColorsWithHex:
+                                                _selectedColorsWithHex,
+                                          ))
+                                      .toList(),
                                 ),
                               ),
                               const SizedBox(height: 16.0),

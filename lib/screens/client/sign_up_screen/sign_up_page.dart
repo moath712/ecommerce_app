@@ -4,6 +4,7 @@ import 'package:ecommerce_app/screens/client/sign_up_screen/widgets/address_fiel
 import 'package:ecommerce_app/screens/client/sign_up_screen/widgets/email_field.dart';
 import 'package:ecommerce_app/screens/client/sign_up_screen/widgets/name_field.dart';
 import 'package:ecommerce_app/screens/client/sign_up_screen/widgets/number_field.dart';
+import 'package:ecommerce_app/style/app_style.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -210,33 +211,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   }
                   return null;
                 },
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  labelStyle: const TextStyle(color: Colors.black),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: Color(0xFFA95EFA),
-                    ),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: Color(0xFFA95EFA),
-                    ),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: Color(0xFFA95EFA),
-                    ),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: Color(0xFFA95EFA),
-                    ),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
+                decoration: AppStyles.formStyle(
+                  context,
+                  'Phone number',
                   suffixIcon: IconButton(
                     onPressed: () => setState(() => _isHidden = !_isHidden),
                     icon: Icon(
