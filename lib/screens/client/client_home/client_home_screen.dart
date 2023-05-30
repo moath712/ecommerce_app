@@ -91,6 +91,7 @@ class _ClientHomeState extends State<ClientHome> {
   }
 }
 
+
 class DrawerWidget extends StatelessWidget {
   const DrawerWidget({
     super.key,
@@ -133,12 +134,22 @@ class DrawerWidget extends StatelessWidget {
                     ],
                   );
                 } else {
-                  return const CircularProgressIndicator();
+                  return const Center(
+                    child: SizedBox(
+                        height: 25,
+                        width: 25,
+                        child: CircularProgressIndicator()),
+                  );
                 }
               },
             );
           } else {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: SizedBox(
+                  height: 25,
+                  width: 25,
+                  child: Center(child: CircularProgressIndicator())),
+            );
           }
         },
       ),

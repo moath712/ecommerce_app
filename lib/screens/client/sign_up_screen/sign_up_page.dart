@@ -213,7 +213,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 },
                 decoration: AppStyles.formStyle(
                   context,
-                  'Phone number',
+                  'Password',
                   suffixIcon: IconButton(
                     onPressed: () => setState(() => _isHidden = !_isHidden),
                     icon: Icon(

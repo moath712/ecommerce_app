@@ -94,10 +94,12 @@ class OrderDetailsPage extends StatelessWidget {
                                           child: InkWell(
                                             onTap: () async {
                                               final doc =
-                                                  await _generateDocument();
+                                                  await _generateDocument(
+                                                      order);
                                               await Printing.sharePdf(
                                                   bytes: await doc.save(),
-                                                  filename: 'document.pdf');
+                                                  filename:
+                                                      'Style My Space Receipt.pdf');
                                             },
                                             child: const Padding(
                                               padding: EdgeInsets.all(8.0),
@@ -358,14 +360,45 @@ class OrderDetailsPage extends StatelessWidget {
   }
 }
 
-Future<pw.Document> _generateDocument() async {
-  final doc = pw.Document();
-  // This is a placeholder. Replace the Text widget with the widget you'd like to print.
-  final pdfWidget = pw.Text('Hello world!');
+Future<pw.Document> _generateDocument(Map<String, dynamic> order) async {
+  final userData = order['userData'];
+  final cartItems = order['cartItems'] as List<dynamic>;
 
-  doc.addPage(pw.Page(
-    build: (pw.Context context) => pdfWidget,
-  ));
+  final totalPrice = cartItems.fold(
+    0.0,
+    (double previousValue, item) =>
+        previousValue + ((item['price'] ?? 0) * (item['userQuantity'] ?? 1)),
+  );
+
+  final doc = pw.Document();
+
+  doc.addPage(
+    pw.Page(
+      build: (pw.Context context) => pw.Column(
+        children: [
+          pw.Header(level: 0, child: pw.Text('Style My Space receipt')),
+          pw.Paragraph(
+              text: 'Thank you for your purchase, ${userData['firstName']}!'),
+          pw.Paragraph(text: 'Your total price was \$$totalPrice.'),
+          pw.Table.fromTextArray(
+            context: context,
+            data: <List<String>>[
+              <String>['Item', 'Color', 'Quantity', 'Price'],
+              for (var item in cartItems)
+                <String>[
+                  item['title'] ?? '',
+                  item['selectedColor'] != null
+                      ? item['selectedColor']['color']
+                      : 'N/A',
+                  '${item['userQuantity'] ?? '1'}',
+                  '\$${item['price'] ?? '0'}',
+                ],
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
 
   return doc;
 }
