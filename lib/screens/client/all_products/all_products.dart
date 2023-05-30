@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/screens/client/product_details/product_details.dart';
-
 import 'package:flutter/material.dart';
 
 class AllProductsGrid extends StatelessWidget {
@@ -76,7 +75,7 @@ class AllProductsGrid extends StatelessWidget {
                       ),
                       child: Hero(
                         tag:
-                            'hero-tag-${product['productId']}', // Unique tag for Hero widget
+                            'hero-tag-${product['productId']}', 
                         child: Image.network(
                           product['imageURL'],
                           fit: BoxFit.cover,

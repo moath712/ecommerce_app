@@ -1,3 +1,8 @@
+import 'package:ecommerce_app/screens/admin/edit_product/widgets/edit_description_field.dart';
+import 'package:ecommerce_app/screens/admin/edit_product/widgets/edit_price_field.dart';
+import 'package:ecommerce_app/screens/admin/edit_product/widgets/edit_quantity_field.dart';
+import 'package:ecommerce_app/screens/admin/edit_product/widgets/edit_subtitle_field.dart';
+import 'package:ecommerce_app/screens/admin/edit_product/widgets/edit_title_field.dart';
 import 'package:ecommerce_app/style/add_edit_field/add_edit_field.dart';
 import 'package:ecommerce_app/services/manager/imagepicker/image_picker.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
@@ -151,100 +156,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: CustomBoxDecoration(),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        child: TextField(
-                          controller: _titleController,
-                          decoration: const InputDecoration(
-                            labelText: 'Title',
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: CustomBoxDecoration(),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        child: TextField(
-                          inputFormatters: <TextInputFormatter>[
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
-                          controller: _priceController,
-                          decoration: const InputDecoration(
-                            labelText: 'Price',
-                            border: InputBorder.none,
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: CustomBoxDecoration(),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        child: TextField(
-                          inputFormatters: <TextInputFormatter>[
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
-                          controller: _quantityController,
-                          decoration: const InputDecoration(
-                            labelText: 'Quantity',
-                            border: InputBorder.none,
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: CustomBoxDecoration(),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        child: TextField(
-                          controller: _subTitleController,
-                          decoration: const InputDecoration(
-                            labelText: 'Sub Title',
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: CustomBoxDecoration(),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        child: TextField(
-                          controller: _descriptionController,
-                          decoration: const InputDecoration(
-                            labelText: 'Description',
-                            border: InputBorder.none,
-                          ),
-                          maxLines: 3,
-                        ),
-                      ),
-                    ),
-                  ),
+                  EditTitleField(titleController: _titleController),
+                  EditPriceField(priceController: _priceController),
+                  EditQuantityField(quantityController: _quantityController),
+                  EditSubtitleField(subTitleController: _subTitleController),
+                  EditDescriptionField(
+                      descriptionController: _descriptionController),
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
