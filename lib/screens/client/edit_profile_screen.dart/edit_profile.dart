@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_app/screens/client/client_home/client_home_screen.dart';
 import 'package:ecommerce_app/widgets/cart_icon.dart';
 import 'package:ecommerce_app/screens/client/edit_profile_screen.dart/widgets/name_edit.dart';
 import 'package:ecommerce_app/screens/client/edit_profile_screen.dart/widgets/number_edit.dart';
@@ -212,6 +213,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
       'Phone Number': _phoneNumberController.text,
     });
     if (context.mounted) {}
-    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ClientHome()),
+    );
   }
 }

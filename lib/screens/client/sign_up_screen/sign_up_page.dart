@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/screens/client/client_home/client_home_screen.dart';
 import 'package:ecommerce_app/screens/client/sign_up_screen/widgets/address_field.dart';
+import 'package:ecommerce_app/screens/client/sign_up_screen/widgets/building_number.dart';
 import 'package:ecommerce_app/screens/client/sign_up_screen/widgets/email_field.dart';
 import 'package:ecommerce_app/screens/client/sign_up_screen/widgets/name_field.dart';
 import 'package:ecommerce_app/screens/client/sign_up_screen/widgets/number_field.dart';
+import 'package:ecommerce_app/screens/client/sign_up_screen/widgets/street_name.dart';
 import 'package:ecommerce_app/style/app_style.dart';
 import 'package:ecommerce_app/style/assets_manager.dart';
 import 'package:flutter/foundation.dart';
@@ -47,6 +49,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _isHidden = true;
   final _passwordController = TextEditingController();
 
+  // Add these lines at the beginning of your class.
+  final _streetNameController = TextEditingController();
+  final _buildingNumberController = TextEditingController();
+
   Future<void> _signUp() async {
     setState(() {
       _isLoading = true; // Start the loading process
@@ -60,6 +66,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final address = _addressController.text;
       final firstName = _firstNameController.text;
       final phoneNumber = _phonenumbercontroller.text;
+      final streetName = _streetNameController.text;
+      final buildingNumber = _buildingNumberController.text;
+
       final result = await auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
@@ -81,12 +90,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
           'address': address,
           'Phone Number': phoneNumber,
           'imageUrl': url,
+          'streetName': streetName,
+          'buildingNumber': buildingNumber,
         });
       } else {
         await firestore.collection('users').doc(result.user!.uid).set({
           'firstName': firstName,
           'uid': result.user!.uid,
           'Phone Number': phoneNumber,
+          'streetName': streetName, 
+          'buildingNumber': buildingNumber, 
         });
       }
 
@@ -228,6 +241,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
             NumberWidget(phonenumbercontroller: _phonenumbercontroller),
             AddressField(
               addressController: _addressController,
+            ),
+            BuildingNumberField(buildingNumber: _buildingNumberController),
+            StreetNameField(
+              streetname: _streetNameController,
             ),
             const SizedBox(height: 16),
             Padding(
